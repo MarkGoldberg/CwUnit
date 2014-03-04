@@ -61,6 +61,7 @@ ctTestDLLs.Init                           PROCEDURE(*ctLoggers Loggers)
 ctTestDLLs.Get_ICwUnit                    PROCEDURE(*gtTestDLL TestDLL)!,BOOL,PROC !TRUE when ICwUnit was found and set
 szFileName     CSTRING(FILE:MaxFilePath)
 szGet_ICwUnit  CSTRING(ExportName:Get_ICwUnit),STATIC !Not required to be static, but it never changes...
+HoldPath       STRING(FILE:MaxFilePath)
    CODE   																	
    szFileName = TestDLL.FileHelper.WholeFileName()                     ;SELF.Loggers.DebugLog('v  ctTestDLLs.Get_ICwUnit File['& szFileName &']')
    TestDLL.CwUnit &= NULL                                               
@@ -74,6 +75,7 @@ szGet_ICwUnit  CSTRING(ExportName:Get_ICwUnit),STATIC !Not required to be static
 	      
    ELSE
    		TestDLL.LoadError = NoError   		
+   		HoldPath = LONGPATH()
    		SETPATH(TestDLL.FileHelper.DriveDir() )   !<-------- Is this a good idea - probably - as the DLL may have DLL dependencies which it would look for in it's current folder. (guessing at this behavior)
    		
 			szFileName = TestDLL.FileHelper.WholeFileName()
@@ -87,7 +89,7 @@ szGet_ICwUnit  CSTRING(ExportName:Get_ICwUnit),STATIC !Not required to be static
 				 	SELF.Loggers.Log('Failed to find GET_ICwUnit in ['& szFileName &']')
 				END
 			END
-		
+			SETPATH(HoldPath)		
    END			
    																	                     ;SELF.Loggers.DebugLog('^  ctTestDLLs.Get_ICwUnit File['& szFileName &'] Returning['& CHOOSE( NOT TestDLL.CwUnit &= NULL) &']')
    RETURN CHOOSE( NOT TestDLL.CwUnit &= NULL)
@@ -191,12 +193,12 @@ QPtr LONG,AUTO
 															;SELF.Loggers.DebugLog('v  ctTestDLLs.RunTests')
 	LOOP QPtr = 1 TO AllTests.Records()
 		AllTests.GetByPtr(QPtr)          ;SELF.Loggers.DebugLog('   ctTestDLLs.RunTests QPtr['& QPtr &'] About to run: Category['& AllTests.Q.Category &']  Test['& AllTests.Q.TestName &']')
-		AllTests.Run(ResultSetID)
+		AllTests.Run(ResultSetID)		  
 		SELF.LogResults(AllTests.Q)		 
 	END
 															;SELF.Loggers.DebugLog('^  ctTestDLLs.RunTests')	
 
-!=====================================
+!=====================================	
 ctTestDLLs.LogResults                     PROCEDURE(*gtOneTest  OneTest)!,VIRTUAL
    !Assumes TimedResults.Q is aligned
 	CODE
