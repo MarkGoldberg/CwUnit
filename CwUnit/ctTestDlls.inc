@@ -46,6 +46,7 @@ UnLoadTests                    PROCEDURE(*gtTestDLL TestDLL)
 
 Get_ICwUnit                    PROCEDURE(*gtTestDLL TestDLL),BOOL,PROC !TRUE when ICwUnit was found and set
 FreeLibrary                    PROCEDURE(*gtTestDLL TestDLL)
+LogResults                     PROCEDURE(*gtOneTest  OneTest),VIRTUAL 
        END
 
 

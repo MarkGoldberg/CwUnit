@@ -190,16 +190,20 @@ QPtr LONG,AUTO
 	CODE
 															;SELF.Loggers.DebugLog('v  ctTestDLLs.RunTests')
 	LOOP QPtr = 1 TO AllTests.Records()
-		AllTests.GetByPtr(QPtr)                ;SELF.Loggers.DebugLog('   ctTestDLLs.RunTests QPtr['& QPtr &']')
+		AllTests.GetByPtr(QPtr)          ;SELF.Loggers.DebugLog('   ctTestDLLs.RunTests QPtr['& QPtr &'] About to run: Category['& AllTests.Q.Category &']  Test['& AllTests.Q.TestName &']')
 		AllTests.Run(ResultSetID)
-		
-		SELF.Loggers.Log('Category['& AllTests.Q.Category &']  Test['& AllTests.Q.TestName &']')
-		SELF.Loggers.Log('  Result['& ALLTests.Q.TimedResults.Q.OneResult.StatusToString() &']')
-		SELF.Loggers.Log('  Output['& ALLTests.Q.TimedResults.Q.OneResult.Output           &']')
-		
+		SELF.LogResults(AllTests.Q)		 
 	END
 															;SELF.Loggers.DebugLog('^  ctTestDLLs.RunTests')	
 
+!=====================================
+ctTestDLLs.LogResults                     PROCEDURE(*gtOneTest  OneTest)!,VIRTUAL
+   !Assumes TimedResults.Q is aligned
+	CODE
+	SELF.Loggers.Log('Category['& OneTest.Category &']  Test['& OneTest.TestName &']')
+	SELF.Loggers.Log('  Result['& OneTest.TimedResults.Q.OneResult.StatusToString() &']')
+	SELF.Loggers.Log('  Output['& OneTest.TimedResults.Q.OneResult.Output           &']')
+	SELF.Loggers.Log('-{47}')
 !=====================================
 ctTestDLLs.UnLoadTests PROCEDURE(*gtTestDLL TestDLL)
 	CODE	
