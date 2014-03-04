@@ -1,0 +1,15 @@
+!Getting Ready for 64-Bit Windows
+  !Rules for using Pointers 
+    ! http://msdn.microsoft.com/en-us/library/windows/desktop/aa384242(v=vs.85).aspx
+
+			                                  COMPILE('***',_Width32_)
+INT_PTR     EQUATE(LONG)            
+                                       !END-COMPILE('***',_Width32_)
+		  	                                   COMPILE('***',_Width64_)
+INT_PTR     EQUATE(_ULARGE_INTEGER)  !  <<<<<< (to be determined)
+		  	                              !END-COMPILE('***',_Width64_)
+                                 
+Int32or64     EQUATE(INT_PTR)                                 
+HMODULE       EQUATE(INT_PTR)		  
+
+

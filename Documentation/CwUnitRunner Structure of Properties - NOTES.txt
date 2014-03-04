@@ -1,0 +1,171 @@
+              Beware of out of date information...
+              ------------------------------------
+Last Updated: March 3rd, 2014
+
+(see DataTypes at bottom)
+
+CwUnitRunner Structure of Class Properties
+ 
+  Loggers       &ctLoggers !Injected
+  	  DebugLog     &iLog  !<--- for debugging, currently OutputDebugString
+	  OutputLog    &iLog  !<--- for saving output of tests, currently simple ascii
+	                      !     For more sophisticated outputs, will need other method calls than just .LOG(String)
+  TestDLLs      &ctTestDLLs
+    Q              &qtTestDLL
+       FileHelper       &ctFileHelper !FileName
+       CwUnit           &ICwUnit      !The Interface into the DLL
+       hLib             HMODULE       !Use by GetProcAddress API (and LoadLibary/FreeLibrary)
+       LoadError        LONG          !Errors as to why we failed to get the ICwUnit
+       AllTests         &ctAllTests    
+          !v-------- filled in by .DLL itself -----
+          TestName       				 CSTRING(128)
+          Category                   CSTRING(128)
+          ProcedureAddress           INT_PTR
+          UserData1                  INT_PTR !Often will be ADDREESS(SELF)
+          UserData2                  INT_PTR
+          ShouldRun                  BOOL          
+          !^-------- filled in by .DLL itself -----
+          TimedResults               &ctTimedResults       
+				 OneResult                 &ctOneResult
+					ResultSetID               LONG !LIKE(gtResultSets.SetID)
+					Status                    LONG  
+					Output                    ANY 				 
+				 ResultSetID		         LONG             !LIKE(gtResultSets.SetID)
+				 Started                   &ctDateTimeLong  !Date & Time 
+				 Finished                  &ctDateTimeLong  !Date & Time
+				 
+! TestDLLs  <continued>       
+    Loggers                       &ctLoggers,PRIVATE !Injected
+    LoggersInjected               BOOL,PRIVATE
+    ResultSets                    &ctResultSets
+      NextID                        LIKE(gtResultSets.SetID)
+      Q                             &qtResultSets
+        SetID     			            LONG 
+        Started                        &ctDateTimeLong  !Date & Time
+        Finished                       &ctDateTimeLong  !Date & Time
+        DLLFileHelper                  &ctFileHelper    !FileName 
+        Status                         LONG  
+  
+
+------------------------
+[[ below is found in ILog.int ]]
+
+ILog   INTERFACE
+Start	   PROCEDURE(STRING Info),LONG,PROC
+Finish	PROCEDURE(STRING Info),LONG,PROC
+Add      PROCEDURE(STRING ToAdd)
+ClearLog PROCEDURE()
+       END
+
+
+------------------------
+[[ below is found in DateTypes.equ ]]
+
+INT_PTR		  EQUATE(LONG)
+HMODULE       EQUATE(INT_PTR)		  
+
+
+------------------------
+[[ below is found in ctResultSets.inc ]]
+
+gtTestDLLBase GROUP,TYPE      !designed for injecting into ctResultSets
+FileHelper       &ctFileHelper
+CwUnit           &ICwUnit
+hLib             HMODULE
+LoadError        LONG
+				  END
+gtTestDLL	  GROUP(gtTestDLLBase),TYPE  
+AllTests         &ctAllTests
+				  END
+
+qtTestDLL     QUEUE(gtTestDLL)
+			     END
+
+------------------------
+[[ below is found in ctResultSets.inc ]]
+
+gtResultSets    GROUP,TYPE
+SetID     			LONG 
+Started           &ctDateTimeLong
+Finished          &ctDateTimeLong
+DLLFileHelper     &ctFileHelper  
+!DLL_Info          &gtDLL_Info
+!WorkDirectory     CSTRING(FILE:MaxFilePath)
+Status            LONG  
+					 END
+					 
+qtResultSets    QUEUE(gtResultSets),TYPE
+					 END
+------------------------
+[[ below is found in ctDateTimeLong.inc ]]
+gtDateTimeLong			GROUP,TYPE
+Date								LONG
+Time								LONG
+								END
+------------------------
+[[ below is found In ctFileHelper.inc ]]
+gtFnsplit   		GROUP,TYPE
+_Path         			CSTRING(FILE:MaxFilePath) !255)            !Used by FnSplit
+_Drive        			CSTRING(FILE:MaxFilePath) !255) ! 12) ! 2) !Used by FnSplit
+_Dir          			CSTRING(FILE:MaxFilePath) !255)!64)        !Used by FnSplit
+_Name         			CSTRING(FILE:MaxFilePath) !255)! 8)        !Used by FnSplit
+_Ext          			CSTRING(FILE:MaxFilePath) !255)! 3)        !Used by FnSplit !bug? where is '.' held?
+            		END
+qtFileList  		QUEUE,TYPE
+FName           		STRING(FILE:MaxFilePath)
+            		END
+            		
+
+
+------------------------
+[[ below is found In ICwUnit.int ]]
+gtOneTestFromDLL        GROUP,TYPE
+TestName       				CSTRING(128)
+Category                   CSTRING(128)
+ProcedureAddress           INT_PTR
+UserData1                  INT_PTR !Often will be ADDREESS(SELF)
+UserData2                  INT_PTR
+ShouldRun                  BOOL
+								END
+         
+ICwUnit                 INTERFACE
+InterfaceType              PROCEDURE(),STRING
+GetTestCount               PROCEDURE(),LONG    
+GetTest                    PROCEDURE(LONG TestNum, *gtOneTestFromDLL outOneTest),LONG !Returns ErrorCode()         
+								END
+------------------------
+[[ below is found In ctAllTests.inc ]]
+   INCLUDE(       'ICwUnit.int'),ONCE !for gtOneTestFromDLL  (see just above)
+
+gtOneTest      GROUP(gtOneTestFromDLL),TYPE
+TimedResults       &ctTimedResults
+               END
+
+qtOneTest      QUEUE(gtOneTest),TYPE
+					END
+
+------------------------
+[[ below is found In ctTimedResult.inc ]]
+
+gtTimedResult   GROUP,TYPE
+OneResult         &ctOneResult
+ResultSetID		   LONG             !LIKE(gtResultSets.SetID)
+Started           &ctDateTimeLong
+Finished          &ctDateTimeLong
+			 		 END
+					 
+qtTimedResult   QUEUE(gtTimedResult),TYPE
+                END					 
+
+------------------------
+[[ below is found In ctOneResult.inc ]]
+
+gtOneResult GROUP,TYPE
+ResultSetID       LONG !LIKE(gtResultSets.SetID)
+Status            LONG  
+Output            ANY 
+            END
+
+!ALSO:       Op:*  EQUATES
+!ALSO:   STATUS:*  EQUATES
+

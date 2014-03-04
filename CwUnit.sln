@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+# Clarion 2.1.0.2447
+Project("{12B76EC0-1D7B-4FA7-A7D0-C524288B48A1}") = "CwUnit", "CwUnit\CwUnit.cwproj", "{4EF1713F-42E0-4D74-8F4D-3C8D64C115BC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Used By Each TestDLL", "Used By Each TestDLL", "{28733F24-9802-4F38-8C89-9ABD7EC5A4B0}"
+	ProjectSection(SolutionItems) = postProject
+		.\LibsrcCwUnit\ctCWUnit.clw = .\LibsrcCwUnit\ctCWUnit.clw
+		.\LibsrcCwUnit\ctCWUnit.inc = .\LibsrcCwUnit\ctCWUnit.inc
+		.\LibsrcCwUnit\ctOneResult.clw = .\LibsrcCwUnit\ctOneResult.clw
+		.\LibsrcCwUnit\ctOneResult.inc = .\LibsrcCwUnit\ctOneResult.inc
+		.\LibsrcCwUnit\ICwUnit.int = .\LibsrcCwUnit\ICwUnit.int
+		.\Libsrc\ctQueue.inc = .\Libsrc\ctQueue.inc
+		LibsrcCwUnit\DataTypes.equ = LibsrcCwUnit\DataTypes.equ
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CwUnitRunner Classes", "CwUnitRunner Classes", "{5A1E01C0-77FB-44C4-861E-83A7C1136C2D}"
+	ProjectSection(SolutionItems) = postProject
+		.\CwUnit\ctCwUnitRunner.clw = .\CwUnit\ctCwUnitRunner.clw
+		.\CwUnit\ctCwUnitRunner.inc = .\CwUnit\ctCwUnitRunner.inc
+		.\CwUnit\ctTestDlls.clw = .\CwUnit\ctTestDlls.clw
+		.\CwUnit\ctTestDlls.inc = .\CwUnit\ctTestDlls.inc
+		.\CwUnit\ctAllTests.clw = .\CwUnit\ctAllTests.clw
+		.\CwUnit\ctAllTests.inc = .\CwUnit\ctAllTests.inc
+		.\CwUnit\ctResultSets.clw = .\CwUnit\ctResultSets.clw
+		.\CwUnit\ctResultSets.inc = .\CwUnit\ctResultSets.inc
+		.\CwUnit\ctTimedResults.clw = .\CwUnit\ctTimedResults.clw
+		.\CwUnit\ctTimedResults.inc = .\CwUnit\ctTimedResults.inc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libsrc", "Libsrc", "{DF915354-F5F9-4A21-8F5D-A8C457578CE4}"
+	ProjectSection(SolutionItems) = postProject
+		.\Libsrc\ctQueue.clw = .\Libsrc\ctQueue.clw
+		.\Libsrc\ctFileHelper.clw = .\Libsrc\ctFileHelper.clw
+		.\Libsrc\ctFileHelper.inc = .\Libsrc\ctFileHelper.inc
+		.\Libsrc\ctDateTimeLong.clw = .\Libsrc\ctDateTimeLong.clw
+		.\Libsrc\ctDateTimeLong.inc = .\Libsrc\ctDateTimeLong.inc
+		.\Libsrc\ctDateTimeLong.clw = .\Libsrc\ctDateTimeLong.clw
+		.\Libsrc\ctDateTimeLong.inc = .\Libsrc\ctDateTimeLong.inc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Loggers", "Loggers", "{019FF2A1-A5E1-47DE-8430-87DC6E4D0715}"
+	ProjectSection(SolutionItems) = postProject
+		.\Libsrc\ILog.int = .\Libsrc\ILog.int
+		.\Libsrc\ctLoggers.inc = .\Libsrc\ctLoggers.inc
+		.\Libsrc\ctLoggers.clw = .\Libsrc\ctLoggers.clw
+		.\Libsrc\ctAsciiLogger.clw = .\Libsrc\ctAsciiLogger.clw
+		.\Libsrc\ctAsciiLogger.inc = .\Libsrc\ctAsciiLogger.inc
+		.\Libsrc\ctOutputDebugString.clw = .\Libsrc\ctOutputDebugString.clw
+		.\Libsrc\ctOutputDebugString.inc = .\Libsrc\ctOutputDebugString.inc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{442CC6A5-EC02-4065-A985-C185B70998E9}"
+	ProjectSection(SolutionItems) = postProject
+		Documentation\CwUnitRunner Structure of Properties - NOTES.txt = Documentation\CwUnitRunner Structure of Properties - NOTES.txt
+	EndProjectSection
+EndProject
+Project("{12B76EC0-1D7B-4FA7-A7D0-C524288B48A1}") = "ExampleTest", "ExampleTest\ExampleTest.cwproj", "{F9FE7B06-23F4-4237-86EF-D7E5E7C01FA4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EF1713F-42E0-4D74-8F4D-3C8D64C115BC}.Debug|Win32.Build.0 = Debug|Win32
+		{4EF1713F-42E0-4D74-8F4D-3C8D64C115BC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4EF1713F-42E0-4D74-8F4D-3C8D64C115BC}.Release|Win32.Build.0 = Release|Win32
+		{4EF1713F-42E0-4D74-8F4D-3C8D64C115BC}.Release|Win32.ActiveCfg = Release|Win32
+		{F9FE7B06-23F4-4237-86EF-D7E5E7C01FA4}.Debug|Win32.Build.0 = Debug|Win32
+		{F9FE7B06-23F4-4237-86EF-D7E5E7C01FA4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F9FE7B06-23F4-4237-86EF-D7E5E7C01FA4}.Release|Win32.Build.0 = Release|Win32
+		{F9FE7B06-23F4-4237-86EF-D7E5E7C01FA4}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{019FF2A1-A5E1-47DE-8430-87DC6E4D0715} = {DF915354-F5F9-4A21-8F5D-A8C457578CE4}
+	EndGlobalSection
+EndGlobal

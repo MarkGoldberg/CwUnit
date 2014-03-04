@@ -1,0 +1,7 @@
+
+ILog      INTERFACE
+Start	       PROCEDURE(STRING Info),LONG,PROC
+Finish       PROCEDURE(STRING Info),LONG,PROC
+Add          PROCEDURE(STRING ToAdd)
+ClearLog     PROCEDURE()
+          END

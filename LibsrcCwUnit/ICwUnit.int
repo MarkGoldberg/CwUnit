@@ -1,0 +1,20 @@
+	INCLUDE('DataTypes.equ'),ONCE !For INT_PTR EQUATE(LONG)
+	
+ExportName:Get_ICwUnit  EQUATE('GET_ICWUNIT')  
+
+gtOneTestFromDLL        GROUP,TYPE
+TestName       				CSTRING(128) !Arbitrary Limitation
+Category                   CSTRING(128) !Arbitrary Limitation
+ProcedureAddress           INT_PTR
+UserData1                  INT_PTR !Often will be ADDREESS(SELF)
+UserData2                  INT_PTR
+ShouldRun                  BOOL
+								END
+ 								
+
+ICwUnit                 INTERFACE
+InterfaceType              PROCEDURE(),STRING
+GetTestCount               PROCEDURE(),LONG    
+GetTest                    PROCEDURE(LONG TestNum, *gtOneTestFromDLL outOneTest),LONG !Returns ErrorCode()
+                        END
+
