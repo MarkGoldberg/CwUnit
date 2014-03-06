@@ -5,9 +5,9 @@ ExportName:Get_ICwUnit  EQUATE('GET_ICWUNIT')
 gtOneTestFromDLL        GROUP,TYPE
 TestName       				CSTRING(128) !Arbitrary Limitation
 Category                   CSTRING(128) !Arbitrary Limitation
+_SELF                      INT_PTR      
 ProcedureAddress           INT_PTR
-UserData1                  INT_PTR !Often will be ADDREESS(SELF)
-UserData2                  INT_PTR
+UserData                   INT_PTR
 ShouldRun                  BOOL
 								END
  								

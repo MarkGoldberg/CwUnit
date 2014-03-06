@@ -20,9 +20,9 @@ CwUnitRunner Structure of Class Properties
           !v-------- filled in by .DLL itself -----
           TestName       				 CSTRING(128)
           Category                   CSTRING(128)
+          _SELF                      INT_PTR
           ProcedureAddress           INT_PTR
-          UserData1                  INT_PTR !Often will be ADDREESS(SELF)
-          UserData2                  INT_PTR
+          UserData                   INT_PTR
           ShouldRun                  BOOL          
           !^-------- filled in by .DLL itself -----
           TimedResults               &ctTimedResults       

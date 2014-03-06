@@ -33,14 +33,13 @@ ctCwUnit.TearDown            PROCEDURE()!,VIRTUAL
 	CODE
 	!Stub - should be derived
 	
-ctCwUnit.AddTest		       PROCEDURE(STRING Category, STRING TestName,  INT_PTR ProcedureAddress, INT_PTR UserData1, INT_PTR UserData2=0)	
-   !Somewhat strange ordering of parameters: done to avoid "parameter ambiguous" errors, and allow omittiable UserData Parameters
+ctCwUnit.AddTest		       PROCEDURE(STRING Category, STRING TestName, INT_PTR _SELF,  INT_PTR ProcedureAddress,  INT_PTR UserData=0)  
 	CODE
 	SELF.Tests.Category         = Category
 	SELF.Tests.TestName         = TestName
+	SELF.Tests._SELF            = _SELF
 	SELF.Tests.ProcedureAddress = ProcedureAddress
-	SELF.Tests.UserData1        = UserData1
-	SELF.Tests.UserData2        = UserData2
+	SELF.Tests.UserData         = UserData
 	ADD(SELF.Tests)
 
 
@@ -76,5 +75,5 @@ RetError LONG,AUTO
 
 !EndRegion ctCwUnit Methods  
 
-!
+
 

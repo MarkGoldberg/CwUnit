@@ -11,7 +11,7 @@ DESTRUCT            PROCEDURE
 Setup               PROCEDURE(INT_PTR UserData),VIRTUAL
 TearDown            PROCEDURE(),VIRTUAL
 GetICwUnit          PROCEDURE(INT_PTR UserData),*ICwUnit
-AddTest		        PROCEDURE(STRING Category, STRING TestName,  INT_PTR ProcedureAddress, INT_PTR UserData1, INT_PTR UserData2=0)	
+AddTest		        PROCEDURE(STRING Category, STRING TestName, INT_PTR _SELF, INT_PTR ProcedureAddress, INT_PTR UserData=0)	
 Find                PROCEDURE(STRING Category, STRING TestName),LONG,PROC !Returns ErrorCode()
 			   END  
 
