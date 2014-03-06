@@ -1,0 +1,58 @@
+{  // see http://www.sublimetext.com/docs/2/projects.html
+   "folders":
+   [
+      {
+         "path": ".",   
+         "name": "CwUnit",
+         "folder_exclude_patterns": ["map","obj","Lib","Junk","Bogus","Copy","Renamed","tmp","RunHere","TX","Icon","IconNew","Images"],
+         "file_exclude_patterns": ["*.bak", ".hg*",".git*","TPS","DLL","obj","RSC", "*.sublime-workspace"]
+      }
+      ,{
+         // WARNING: this does *not* automatically change when the BUILD (below) points to a different version of Clarion
+         //    NOTE: the path below is specific to my install, it's probable your path is different.
+         "path": "/C/SV/Clarion9/Libsrc/Win",         
+         "name": "C9-Libsrc-Win",
+         "file_exclude_patterns": ["*.bak", ".hg*", ".git*"]
+      }
+   ]
+
+    ,"settings":
+    {
+        "tab_size": 3
+    }
+
+     
+   //no doc, what just hoping this would work: ,"completions" : [     "ninProject"   ]
+
+    ,"build_systems":
+    [
+      // see http://docs.sublimetext.info/en/latest/reference/build_systems.html
+        {
+            "name": "Clarion",                                   
+            "cmd": [ 
+                     "${packages}\\Clarion\\bin\\CompileCW.cmd", 
+
+                     // What to build, convention is the same folder and basename as this sublime-project file, but with a .sln instead
+                     "${project/\\.sublime-project/\\.sln/}",
+
+                     // Build Configuration typically Debug|Release  
+                     "Debug",
+                     //"Release",                                 
+
+                     //CWRoot                      
+                     // "C:\\SV\\Clarion8",
+                     "C:\\SV\\Clarion9",   
+                     // "C:\\SV\\Clarion91",   
+
+                     //(Optional) CW_Ver, such as "8.0.9579" will default to current
+                     ""                   
+            ],
+            //uses perl style regex: (maybe this) http://www.cs.tut.fi/~jkorpela/perl/regexp.html
+            "file_regex": "^\\s*(.*)\\(([0-9]*),([0-9]*)" 
+
+            //"working_dir": "${project_path}:${folder}}",
+            //"shell" : true,           
+        }
+    ]
+
+}
