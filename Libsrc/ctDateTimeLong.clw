@@ -18,7 +18,7 @@ Static_DateTimeLong.Now                        PROCEDURE(      *gtDateTimeLong D
 	
 Static_DateTimeLong.ToString                   PROCEDURE(CONST *gtDateTimeLong DT)!,STRING
 	CODE
-   RETURN '['& FORMAT(DT.Date,@D1) &' @ '& FORMAT(DT.Time,@T4) &']'
+   RETURN FORMAT(DT.Date,@D1) &' @ '& FORMAT(DT.Time,@T4)
 
 Static_DateTimeLong.NowAsString                PROCEDURE()!,STRING   
 tmpDTL LIKE(gtDateTimeLong)
@@ -26,6 +26,33 @@ tmpDTL LIKE(gtDateTimeLong)
 	SELF.Now(tmpDTL)
 	RETURN SELF.ToString(tmpDTL)
 
+
+Static_DateTimeLong.AsSpan                     PROCEDURE(      *gtDateTimeLong outDTSpan, CONST *gtDateTimeLong inDTStart, CONST *gtDateTimeLong inDTEnd)
+	CODE
+	outDTSpan.Date = inDTEnd.Date - inDTStart.Date
+	outDTSpan.Time = inDTEnd.Time - inDTStart.Time
+	IF outDTSpan.Time < 0
+		outDTSpan.Time += TIME:Day
+	   outDTSpan.Date -= 1 
+	END
+	
+Static_DateTimeLong.SpanTicks                  PROCEDURE(                                 CONST *gtDateTimeLong inDTStart, CONST *gtDateTimeLong inDTEnd)!,STRING
+DTSpan LIKE(gtDateTimeLong)
+	CODE
+	SELF.AsSpan( DTSpan, inDTStart, inDTEnd)
+	RETURN SELF.AsTicks(DTSpan)
+	
+Static_DateTimeLong.AsTicks                    PROCEDURE( CONST *gtDateTimeLong DT)!,STRING	
+	CODE
+	RETURN (DT.Date * TIME:Day) + DT.Time
+	
+
+Static_DateTimeLong.SpanToString               PROCEDURE(                                 CONST *gtDateTimeLong inDTStart, CONST *gtDateTimeLong inDTEnd)!,STRING
+DTSpan LIKE(gtDateTimeLong)
+	CODE
+	SELF.AsSpan( DTSpan, inDTStart, inDTEnd)
+	RETURN SELF.ToString(DTSpan)
+	
 !EndRegion Static_DateTimeLong
 
 
@@ -57,6 +84,11 @@ _SELF  &ctDateTimeLong
 	_SELF &= NEW ctDateTimeLong
 	_SELF.Zero()
 	RETURN _SELF
+
+ctDateTimeLong.AsTicks                    PROCEDURE()!,STRING
+	CODE
+   RETURN SELF.AsTicks( SELF.DT )
+	
 
 !EndRegion ctDateTimeLong	
    

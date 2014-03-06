@@ -205,6 +205,8 @@ ctTestDLLs.LogResults                     PROCEDURE(*gtOneTest  OneTest)!,VIRTUA
 	SELF.Loggers.Log('Category['& OneTest.Category &']  Test['& OneTest.TestName &']')
 	SELF.Loggers.Log('  Result['& OneTest.TimedResults.Q.OneResult.StatusToString() &']')
 	SELF.Loggers.Log('  Output['& OneTest.TimedResults.Q.OneResult.Output           &']')
+	SELF.Loggers.Log('   Start['& OneTest.TimedResults.Q.Started.ToString() &']  Finished['& OneTest.TimedResults.Q.Finished.ToString() &'] ' & |
+	                     ' SpanTicks['& OneTest.TimedResults.Q.Started.SpanTicks( OneTest.TimedResults.Q.Started.DT, OneTest.TimedResults.Q.Finished.DT)   &']')	
 	SELF.Loggers.Log('-{47}')
 !=====================================
 ctTestDLLs.UnLoadTests PROCEDURE(*gtTestDLL TestDLL)

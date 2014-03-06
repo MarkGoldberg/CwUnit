@@ -1,0 +1,9 @@
+   OMIT('*** IFDEF ***', TIME:Second)
+TIME:Tick   EQUATE(  1)
+TIME:Second EQUATE(100 * TIME:Tick)
+TIME:Minute EQUATE( 60 * TIME:Second)
+TIME:Hour   EQUATE( 60 * TIME:Minute)
+TIME:Day    EQUATE( 24 * TIME:Hour  )
+ !END-OMIT('*** IFDEF ***', TIME:Second)
+
+
