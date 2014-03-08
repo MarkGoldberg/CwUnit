@@ -1,4 +1,5 @@
   MEMBER()
+  INCLUDE('ctFileHelper.inc'),ONCE
   
 ! ASSERTs with eqDBG rely on a System{AssertHook2} to turn these into debugging calls (see Debuger.inc)
 !   they will only work when in debug mode, or with pragma asserts=>on
@@ -11,10 +12,17 @@ EQDBG EQUATE('<4,2,7>')
 
       GetTempFileName( *CSTRING lpPathName, *CSTRING lpPrefixString, UNSIGNED uUnique, *CSTRING lpTempFileName ),UNSIGNED,RAW,PASCAL,NAME('GetTempFileNameA')
       GetTempPath    ( LONG nBufferLength, *? lpBuffer ),LONG,RAW,PASCAL,NAME('GetTempPathA')
+
+      !http://msdn.microsoft.com/en-us/library/windows/desktop/aa364963(v=vs.85).aspx
+      !GetFullPathName( LPCTSTR lpFileName, DWORD nBufferLength, LPTSTR lpBuffer, LPTSTR *lpFilepart),DWORD,PASCAL,RAW,NAME('GetFullPathName')
+      GetFullPathName( *CSTRING, DWORD nBufferLength, *CSTRING lpBuffer, LONG lpFilepart),DWORD,PASCAL,RAW,NAME('GetFullPathNameA')
+
+      !Win8+ PathCchCombine ( PWSTR pszPathOut, SIZE_T ccPathOut, PCWSTR pszPathIn, PCWSTR pszMore),RAW,PASCAL,NAME('PathCchCombine')
+      !PathCombine( LPTSTR pszPathOut, LPCTSTR pszPathIn, LPCTSTR pszMore),PASCAL,RAW,Name('PathCombine')
+      !PathCompactPath  - Truncates a file path to fit within a given pixel width by replacing path components with ellipses.
   	END
   END
   
-  INCLUDE('ctFileHelper.inc'),ONCE
 
 
 !Region StaticFileHelper
@@ -74,8 +82,20 @@ StaticFileHelper.ToString              PROCEDURE(CONST *gtFnSplit SplitFile, STR
          'Ext  ['& CLIP( SplitFile._Ext   ) &']' 
 
 
+!===========================================================
+StaticFileHelper.AbsolutePath    PROCEDURE(STRING FileName)!,STRING
+szFileName  CSTRING(FILE:MaxFilePath)
+Answer      CSTRING(FILE:MaxFilePath)   
+AnswerLen   DWORD,AUTO
+   CODE
+   szFileName = FileName
+   AnswerLen  = GetFullPathName( szFileName, SIZE(szFileName), Answer, 0)
+   RETURN Answer
+  !RETURN SUB(Answer, 1, AnswerLen)
+
 StaticFileHelper.WholeFileName    PROCEDURE(*gtFnSplit Info)!,STRING
   !FIXME: This is NOT an absolute path, it turns out this is the same as SELF.SplitInfo._Path
+  !To get an Absolute path:  PathCchCombine --  http://msdn.microsoft.com/en-us/library/hh707085(v=vs.85).aspx  
   CODE
   RETURN Info._Path
   !SELF.FnSplit(Info)
@@ -274,6 +294,10 @@ _SELF &ctFileHelper
 	_SELF.SetFileName(newFileName)
 	RETURN _SELF
 	
+ctFileHelper.AbsolutePath            PROCEDURE()!,STRING
+   CODE
+   RETURN SELF.AbsolutePath(SELF.SplitInfo._Path)
+
 ctFileHelper.WholeFileName    PROCEDURE()!,STRING
   !FIXME: This is NOT an absolute path, it turns out this is the same as SELF.SplitInfo._Path
    CODE

@@ -1,5 +1,6 @@
 
 	!INCLUDE('WinEQU.clw),ONCE
+   INCLUDE('Windows.inc'),ONCE
 !UINT              EQUATE(UNSIGNED)	
 	
 gtFnsplit   		GROUP,TYPE
@@ -32,6 +33,7 @@ FnSplit                 PROCEDURE(*gtFnSplit xaInfo)
 FnSplit                 PROCEDURE(  STRING xPath, <*STRING xaDrive>, <*STRING xaDir>, <*STRING xaName>, <*STRING xaExt>)
 ToString                PROCEDURE(CONST *gtFnSplit SpiltFile, STRING Delimiter),STRING
 
+AbsolutePath            PROCEDURE(STRING FleName),STRING
 WholeFileName           PROCEDURE(*gtFnSplit xaInfo),STRING
 DriveDir                PROCEDURE(  STRING xPath),STRING
 BaseName                PROCEDURE(  STRING xPath),STRING
@@ -55,7 +57,8 @@ SplitInfo            	LIKE(gtFnsplit)
 NewAndSetFileName       PROCEDURE(STRING newFileName),*ctFileHelper
 SetFileName          	PROCEDURE(STRING newFileName)
 Exists               	PROCEDURE(),BOOL
-WholeFileName        PROCEDURE(),STRING
+AbsolutePath            PROCEDURE(),STRING
+WholeFileName           PROCEDURE(),STRING
 DriveDir                PROCEDURE(),STRING
 BaseName                PROCEDURE(),STRING
 Extension               PROCEDURE(),STRING

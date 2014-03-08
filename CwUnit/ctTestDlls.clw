@@ -1,12 +1,8 @@
   MEMBER()
   INCLUDE('ctTestDLLs.inc'),ONCE
+  INCLUDE(   'Windows.inc'),ONCE   !LoadLibary,GetProcAddress,FreeLibrary
 
   MAP
-  		 MODULE('')
-            LoadLibrary    (         CONST *CSTRING),HMODULE,PASCAL,NAME('LoadLibraryA')
-            FreeLibrary    (HMODULE                ),BOOL,PASCAL,PROC
-            GetProcAddress (HMODULE, CONST *CSTRING),LONG,PASCAL
-		 END
   END
   
 fpGetInterface INT_PTR,NAME('GetInterface'),STATIC	!Must be STATIC (all modular data is static)
@@ -63,7 +59,7 @@ szFileName     CSTRING(FILE:MaxFilePath)
 szGet_ICwUnit  CSTRING(ExportName:Get_ICwUnit),STATIC !Not required to be static, but it never changes...
 HoldPath       STRING(FILE:MaxFilePath)
    CODE   																	
-   szFileName = TestDLL.FileHelper.WholeFileName()                     ;SELF.Loggers.DebugLog('v  ctTestDLLs.Get_ICwUnit File['& szFileName &']')
+   szFileName = TestDLL.FileHelper.WholeFileName()                     ;SELF.Loggers.DebugLog('v  ctTestDLLs.Get_ICwUnit File['& szFileName &'] = AbsolutePath ['& TestDLL.FileHelper.AbsolutePath() &']')
    TestDLL.CwUnit &= NULL                                               
    TestDLL.hLib    = 0   
 
