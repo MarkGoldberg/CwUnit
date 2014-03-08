@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<Template author="SoftVelocity" version="1.0">
+	<Config
+		  name        = "CwUnit Test Member Module"
+		  icon        = "CW.File.EmptyFile"
+		  category    = "Clarion"
+		  defaultname = "${ProjectName}_${Number}.clw"
+		  language    = "Clarion"/>
+	 
+	<Description>CwUnit Test Member Module</Description>
+	
+	<Files>
+		<File name="${FullName}" language="Clarion">
+			<![CDATA[
+
+  MEMBER('${ProjectName}')
+
+${StandardHeader.Clarion}
+
+  MEMBER('${ProjectName}')
+  MAP
+Test:Example             PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2) 
+  END
+
+${ProjectName}_1:AddTests   PROCEDURE(*ctCwUnit CwUnit)
+_SELF    INT_PTR(0)
+UserData INT_PTR(0) !last argument of .AddTest
+  CODE
+  CwUnit.AddTest('ExampleCategory', 'IsTrue(TRUE)'    , _SELF, ADDRESS(Test:Example) , TRUE )
+  CwUnit.AddTest('ExampleCategory', 'IsTrue(FALSE)'   , _SELF, ADDRESS(Test:Example) , FALSE)
+  CwUnit.AddTest('ExampleCategory', 'IsTrue(2)'       , _SELF, ADDRESS(Test:Example) , 2    )
+ 
+Test:Example             PROCEDURE(INT_PTR _SELF,  *ctOneResult Result,  INT_PTR UserData)
+   CODE
+   Result.IsTrue( UserData2 ) 
+
+]]>
+		</File>
+	</Files>
+	<AdditionalOptions/>
+</Template>
+
+

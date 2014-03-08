@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<Template originator   = "SoftVelocity">
+
+	<!-- Template Header -->
+	<TemplateConfiguration>
+		<Name>CwUnit TestDLL</Name>
+		<Category>Clarion for Windows</Category>
+		<Icon>CW.Project.EmptyProject</Icon>
+		<Description>CwUnit TestDLL</Description>
+	</TemplateConfiguration>
+
+	<Actions>
+		<Open filename = "${ProjectName}.clw"/>
+	</Actions>
+
+	<Project name = "${ProjectName}" directory = "." language = "Clarion">
+		<PropertyGroup>
+			<OutputType>Dll</OutputType>
+		</PropertyGroup>
+
+		<Files>
+			<File name="${ProjectName}.clw">
+				<![CDATA[
+  PROGRAM
+
+! ================================================================================
+! CwUnit Unit Test DLL
+! Please add {include %CwUnit%\CwUnit.RED } to your .RED
+! ================================================================================
+${StandardHeader.Clarion}
+
+  INCLUDE(   'ctCwUnit.inc'),ONCE  
+  INCLUDE('ctOneResult.inc'),ONCE
+  MAP
+     GetICwUnit(INT_PTR UserData),*ICwUnit,NAME(ExportName:Get_ICwUnit)
+     
+     MODULE('${ProjectName}_1')
+        ${ProjectName}_1:AddTests(*ctCwUnit CwUnit)
+     END
+  END
+
+
+MyCwUnit        CLASS(ctCwUnit)
+Setup               PROCEDURE(INT_PTR UserData),DERIVED
+Teardown            PROCEDURE(),DERIVED
+                 END
+  CODE
+  !never runs
+  
+  
+GetICwUnit                     PROCEDURE(INT_PTR UserData)  !<-- Exported Procedure
+   !UserData is for Future Use
+   CODE            
+   RETURN MyCwUnit.GetICwUnit(UserData)
+
+
+MyCwUnit.Setup                PROCEDURE(INT_PTR UserData)
+   CODE
+   IF SELF.ICwUnit.GetTestCount() = 0                                       
+      !v================================================= <=== ADD TESTS HERE
+      ${ProjectName}_1:AddTests(SELF)
+      !^================================================= <=== ADD TESTS HERE
+   END      
+  
+MyCwUnit.Teardown            PROCEDURE()!,DERIVED
+   CODE
+   
+   ]]>
+				</File>
+			<File name="${ProjectName}.exp">
+				<![CDATA[LIBRARY '${ProjectName}' GUI
+EXPORTS
+
+   GET_ICWUNIT @?
+]]>
+			</File>
+         <File name="${ProjectName}_1.clw">
+            <![CDATA[
+  MEMBER('${ProjectName}')
+  MAP
+Test:Example             PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2) 
+  END
+
+${ProjectName}_1:AddTests   PROCEDURE(*ctCwUnit CwUnit)
+_SELF    INT_PTR(0)
+UserData INT_PTR(0) !last argument of .AddTest
+  CODE
+  CwUnit.AddTest('ExampleCategory', 'IsTrue(TRUE)'    , _SELF, ADDRESS(Test:Example) , TRUE )
+  CwUnit.AddTest('ExampleCategory', 'IsTrue(FALSE)'   , _SELF, ADDRESS(Test:Example) , FALSE)
+  CwUnit.AddTest('ExampleCategory', 'IsTrue(2)'       , _SELF, ADDRESS(Test:Example) , 2    )
+ 
+Test:Example             PROCEDURE(INT_PTR _SELF,  *ctOneResult Result,  INT_PTR UserData)
+   CODE
+   Result.IsTrue( UserData2 ) 
+  
+]]>
+         </File>
+		</Files>
+	</Project>
+</Template>
+

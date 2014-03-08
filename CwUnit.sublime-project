@@ -14,6 +14,13 @@
          "name": "C9-Libsrc-Win",
          "file_exclude_patterns": ["*.bak", ".hg*", ".git*"]
       }
+      ,{
+         // WARNING: this does *not* automatically change when the BUILD (below) points to a different version of Clarion
+         //    NOTE: the path below is specific to my install, it's probable your path is different.
+         "path": "/C/SV/Clarion9/bin/Addins/BackendBindings/ClarionBinding/",         
+         "name": "C9-IDE Templates",
+         "file_exclude_patterns": ["*.bak", ".hg*", ".git*"]
+      }
    ]
 
     ,"settings":
