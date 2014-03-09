@@ -74,6 +74,11 @@ ctQueue.Records				PROCEDURE()!,LONG
    
 	RETURN RECORDS(SELF.BaseQ)
 
+!------------------------------------------------------------------------------------------------------  
+ctQueue.Count             PROCEDURE()!,LONG    !Alias for Records
+   CODE
+   RETURN SELF.Records()
+
 
 !------------------------------------------------------------------------------------------------------	
 ctQueue.GetByPtr				PROCEDURE(LONG xPointer)
