@@ -2,7 +2,7 @@
 
  MAP
  	MODULE('API')
-     OutputDebugSTRING(*CSTRING Message),PASCAL,RAW,NAME('OutputDebugStringA')
+     OutputDebugString(*CSTRING Message),PASCAL,RAW,NAME('OutputDebugStringA')
  	END
  END
  INCLUDE('ctOutputDebugString.inc'),ONCE
@@ -13,7 +13,7 @@ sz &CSTRING
 	CODE
 	sz &= NEW CSTRING( SIZE(Msg)+1 )
 	sz  =                   Msg
-	OutputDebugSTRING(sz)
+	OutputDebugString(sz)
 	DISPOSE(sz)
  
  !Region ILog Mirror Methods

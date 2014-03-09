@@ -27,7 +27,7 @@ Log          ctAsciiLogger
   ELSE    
      Loggers.Init(Log.ILog, ODS.ILog)
   	  ODS.Start('CwUnit')
-  	  ODS.ClearLog()  !<------------- TEMPORARY
+  	 !ODS.ClearLog()  !<------------- WAS TEMPORARY
   	  CwUnitRunner.Init(Loggers)
      CwUnitRunner.ReadSettings('CwUnit.Ini')   !currently uses ODS.iLog
      Log.Start( CwUnitRunner.Loggers.OutputLogFile )
