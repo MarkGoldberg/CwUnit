@@ -27,11 +27,14 @@ ctTimedResults.Description                    PROCEDURE()!,STRING,DERIVED
   RETURN 'ctTimedResults'
 	
 !=====================================
-ctTimedResults.Starting                      PROCEDURE(LONG ResultSetID)
+ctTimedResults.Starting                      PROCEDURE(LONG ResultSetID, ? Data1, ? Data2)
   CODE
   CLEAR(SELF.Q)
-  SELF.Q.OneResult         &= NEW ctOneResult
-  SELF.Q.ResultSetID		    = ResultSetID
+  SELF.Q.OneResult         &= NEW CwUnit_ctResult
+  SELF.Q.OneResult.Data1        = Data1
+  SELF.Q.OneResult.Data2        = Data2    
+
+  SELF.Q.ResultSetID            = ResultSetID 
   SELF.Q.Started           &= NEW ctDateTimeLong !SELF.Q.Started.NewNow()
   SELF.Q.Started.Now()
   SELF.Q.Finished          &= NEW ctDateTimeLong !SELF.Q.Finished.NewZero()

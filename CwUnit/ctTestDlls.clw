@@ -168,16 +168,16 @@ ctTestDLLs.LoadTests PROCEDURE(*gtTestDLL TestDLL)
 !=====================================
 LoadTests:LoadFromDLL	ROUTINE
 	DATA
-QPtr            LONG,AUTO
-AllTests        &ctAllTests
-OneTestFromDLL  LIKE(gtOneTestFromDLL)
+QPtr                  LONG,AUTO
+AllTests              &ctAllTests
+OneTestMethodFromDLL  LIKE(CwUnit_gtTestMethod)
 	CODE
 	AllTests &= SELF.Q.AllTests
 	
 	LOOP QPtr = 1 TO SELF.Q.CWUnit.GetTestCount() 
-	   CLEAR(                         OneTestFromDLL )
-		IF SELF.Q.CWUnit.GetTest(QPtr, OneTestFromDLL )	= NoError
-		    AllTests.Add(              OneTestFromDLL ) 		
+	   CLEAR(                         OneTestMethodFromDLL )
+		IF SELF.Q.CWUnit.GetTest(QPtr, OneTestMethodFromDLL )	= NoError
+		    AllTests.Add(              OneTestMethodFromDLL ) 		
 		END
 	END
 
@@ -189,13 +189,13 @@ QPtr LONG,AUTO
 															;SELF.Loggers.DebugLog('v  ctTestDLLs.RunTests')
 	LOOP QPtr = 1 TO AllTests.Records()
 		AllTests.GetByPtr(QPtr)          ;SELF.Loggers.DebugLog('   ctTestDLLs.RunTests QPtr['& QPtr &'] About to run: Category['& AllTests.Q.Category &']  Test['& AllTests.Q.TestName &']')
-		AllTests.Run(ResultSetID)		  
+		AllTests.Run(ResultSetID, AllTests.Q)  !Pass Q Buffer as a GROUP		  
 		SELF.LogResults(AllTests.Q)		 
 	END
 															;SELF.Loggers.DebugLog('^  ctTestDLLs.RunTests')	
 
 !=====================================	
-ctTestDLLs.LogResults                     PROCEDURE(*gtOneTest  OneTest)!,VIRTUAL
+ctTestDLLs.LogResults                     PROCEDURE(*gtTestMethodWithResults  OneTest)!,VIRTUAL
    !Assumes TimedResults.Q is aligned
 	CODE
 	SELF.Loggers.Log('Category['& OneTest.Category                                  &']' & |

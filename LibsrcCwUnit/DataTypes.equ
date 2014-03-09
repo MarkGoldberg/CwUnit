@@ -12,4 +12,6 @@ INT_PTR     EQUATE(_ULARGE_INTEGER)  !  <<<<<< (to be determined)
 Int32or64     EQUATE(INT_PTR)                                 
 HMODULE       EQUATE(INT_PTR)		  
 
+Enum          EQUATE(LONG)  
+
 

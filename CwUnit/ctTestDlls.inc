@@ -22,6 +22,8 @@ AllTests         &ctAllTests
 qtTestDLL     QUEUE(gtTestDLL)
 			     END
 
+
+
 ctTestDLLs CLASS(ctQueue),TYPE,MODULE('ctTestDLLs.clw'),LINK('ctTestDLLs.clw')
 Q                             &qtTestDLL
 ResultSets                    &ctResultSets
@@ -46,7 +48,7 @@ UnLoadTests                    PROCEDURE(*gtTestDLL TestDLL)
 
 Get_ICwUnit                    PROCEDURE(*gtTestDLL TestDLL),BOOL,PROC !TRUE when ICwUnit was found and set
 FreeLibrary                    PROCEDURE(*gtTestDLL TestDLL)
-LogResults                     PROCEDURE(*gtOneTest  OneTest),VIRTUAL 
+LogResults                     PROCEDURE(*gtTestMethodWithResults OneTest),VIRTUAL 
        END
 
 

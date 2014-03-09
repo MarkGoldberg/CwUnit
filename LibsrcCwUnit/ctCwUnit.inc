@@ -1,17 +1,22 @@
 
   INCLUDE('ICwUnit.int'),ONCE
+  INCLUDE('ctQueue.inc'),ONCE
   
-qtOneTestFromDLL        QUEUE(gtOneTestFromDLL),TYPE  !gtOneTest is declared in ICwUnit.int
-                        END  
+CwUnit_qtTestMethod QUEUE(CwUnit_gtTestMethod),TYPE  !gtOneTest is declared in ICwUnit.int
+                    END  
   
-ctCwUnit	   CLASS,TYPE,IMPLEMENTS(ICwUnit),MODULE('ctCwUnit.clw'),LINK('ctCwUnit.clw')
-Tests               &qtOneTestFromDLL
+CwUnit_ctTestSuite  CLASS(ctQueue),TYPE,IMPLEMENTS(ICwUnit),MODULE('ctCwUnit.clw'),LINK('ctCwUnit.clw')
+Tests               &CwUnit_qtTestMethod
 CONSTRUCT           PROCEDURE
 DESTRUCT            PROCEDURE
+!Del                 PROCEDURE,DERIVED
+Description         PROCEDURE(),STRING,DERIVED
+
 Setup               PROCEDURE(INT_PTR UserData),VIRTUAL
 TearDown            PROCEDURE(),VIRTUAL
 GetICwUnit          PROCEDURE(INT_PTR UserData),*ICwUnit
-AddTest		        PROCEDURE(STRING Category, STRING TestName, INT_PTR _SELF, INT_PTR ProcedureAddress, INT_PTR UserData=0)	
+AddTest		        PROCEDURE(STRING Category, STRING TestName, INT_PTR _SELF, INT_PTR ProcedureAddress, <? Data1>, <? Data2>)	
 Find                PROCEDURE(STRING Category, STRING TestName),LONG,PROC !Returns ErrorCode()
+
 			   END  
 
