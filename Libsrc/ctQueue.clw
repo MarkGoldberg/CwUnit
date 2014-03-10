@@ -58,6 +58,7 @@ ctQueue.Free					PROCEDURE
 ctQueue.Del					PROCEDURE
 	CODE 
 ?  ASSERT( ~SELF.BaseQ &= NULL, '.Q is null in .Del')
+   CLEAR (SELF.BaseQ)
    DELETE(SELF.BaseQ)
 
 !------------------------------------------------------------------------------------------------------  
