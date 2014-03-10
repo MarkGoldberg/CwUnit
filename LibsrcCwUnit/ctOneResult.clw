@@ -4,8 +4,8 @@
    END
    INCLUDE('CtOneResult.inc'),ONCE
 
-!    INCLUDE('ctOutputDebugString.inc'),ONCE
-!MOD:ODS      ctOutputDebugString
+    INCLUDE('ctOutputDebugString.inc'),ONCE
+MOD:ODS      ctOutputDebugString
 
 
 !==============================================================================
@@ -115,15 +115,16 @@ CwUnit_ctResult.Evaluate         PROCEDURE(*? LHS, STRING       Operator, ? RHS)
 RetIsTrue BOOL
    CODE
    CASE Operator
-     OF Is:EqualTo            ; RetIsTrue = CHOOSE( LHS  = RHS                     )
-     OF Is:NotEqualTo         ; RetIsTrue = CHOOSE( LHS <> RHS                     )
-     OF Is:GreaterThan        ; RetIsTrue = CHOOSE( LHS >  RHS                     )
-     OF Is:GreaterThanOrEqual ; RetIsTrue = CHOOSE( LHS >= RHS                     )
-     OF Is:LessThan           ; RetIsTrue = CHOOSE( LHS <= RHS                     )
-     OF Is:LessThanOrEqual    ; RetIsTrue = CHOOSE( LHS <= RHS                     )
-     OF Is:StartsWith         ; RetIsTrue = CHOOSE( SUB(RHS, 1, SIZE(LHS)) = LHS   )
-     OF Is:Contains           ; RetIsTrue = CHOOSE( INSTRING(LHS, RHS, 1, 1)       )
-     OF Is:EndsWith           ; RetIsTrue = CHOOSE( SUB(RHS, -SIZE(LHS), -1) = LHS )
+     OF     Is:EqualTo            ; RetIsTrue = CHOOSE( LHS  = RHS                     )
+     OF     Is:NotEqualTo         ; RetIsTrue = CHOOSE( LHS <> RHS                     )
+     OF     Is:GreaterThan        ; RetIsTrue = CHOOSE( LHS >  RHS                     )
+     OF     Is:GreaterThanOrEqual ; RetIsTrue = CHOOSE( LHS >= RHS                     )
+     OF     Is:LessThan           ; RetIsTrue = CHOOSE( LHS <= RHS                     )
+     OF     Is:LessThanOrEqual    ; RetIsTrue = CHOOSE( LHS <= RHS                     )
+     OF String:StartsWith         ; RetIsTrue = CHOOSE( SUB(LHS, 1, LEN(RHS)) = RHS   ) ! Bigger  StartsWith Smaller
+     OF String:Contains           ; RetIsTrue = CHOOSE( INSTRING(RHS, LHS, 1, 1)       ) ! Bigger  Contains   Smaller
+     OF String:AppearsIn          ; RetIsTrue = CHOOSE( INSTRING(LHS, RHS, 1, 1)       ) ! Smaller AppearsIn  Bigger
+     OF String:EndsWith           ; RetIsTrue = CHOOSE( SUB(LHS, -LEN(RHS), -1) = RHS ) ! Bigger  EndsWidth  Smaller
    ELSE                       ; RetIsTrue = Status:Inconclusive !<-- a misnomer, but it's as good as anything that's not TRUE or FALSE
    END   
    RETURN RetIsTrue
@@ -139,9 +140,10 @@ RetType OperatorTypeEnum,AUTO
    OROF Is:GreaterThanOrEqual 
    OROF Is:LessThan           
    OROF Is:LessThanOrEqual    
-   OROF Is:StartsWith         
-   OROF Is:Contains           
-   OROF Is:EndsWith           ; RetType = OperatorType:Binary
+   OROF String:StartsWith         
+   OROF String:Contains           
+   OROF String:AppearsIn
+   OROF String:EndsWith           ; RetType = OperatorType:Binary
 
      OF Is:True     
    OROF Is:False             
@@ -286,21 +288,27 @@ DidTestPass BOOL,AUTO
 
 
 !==============================================================================
-CwUnit_ctResult.StartsWith        PROCEDURE(? LookFor , ? LookIn , <? Passed>, <? Failed> )
+CwUnit_ctResult.StartsWith        PROCEDURE(STRING Bigger , STRING Smaller , <? Passed>, <? Failed> )
    CODE
-   SELF.PassFail( CHOOSE( SUB(LookIn, 1, SIZE(LookFor)) = LookFor) , LookFor, Is:StartsWith, LookIn  ,   Passed, Failed)   
+   mod:ODS.Add('CwUnit_ctResult.StartsWith: Bigger['& Bigger &'] StartsWith Smaller['& Smaller &'] SUB(Bigger, 1, LEN(Smaller)['& SUB(Bigger, 1, LEN(Smaller)) &'] WillPass['& CHOOSE( SUB(Bigger, 1, LEN(Smaller)) = Smaller) &']')
+   SELF.PassFail( CHOOSE( SUB(Bigger, 1, LEN(Smaller)) = Smaller) , Bigger, String:StartsWith, Smaller  ,   Passed, Failed)   
 
 
 !==============================================================================
-CwUnit_ctResult.Contains          PROCEDURE(? LookFor , ? LookIn , <? Passed>, <? Failed> )
+CwUnit_ctResult.Contains          PROCEDURE(STRING Bigger , STRING Smaller , <? Passed>, <? Failed> )
    CODE
-   SELF.PassFail( CHOOSE( INSTRING(LookFor, LookIn, 1, 1) ), LookFor, Is:Contains, LookIn  ,   Passed, Failed)   
+   SELF.PassFail( CHOOSE( INSTRING(Smaller, Bigger, 1, 1) ), Bigger, String:Contains, Smaller ,   Passed, Failed)   
+
+!==============================================================================
+CwUnit_ctResult.AppearsIn         PROCEDURE(STRING Smaller, STRING Bigger , <? Passed>, <? Failed> )
+   CODE   
+   SELF.PassFail( CHOOSE( INSTRING(Smaller, Bigger, 1, 1) ), Smaller, String:AppearsIn, Bigger  ,   Passed, Failed)   
 
    
 !==============================================================================
-CwUnit_ctResult.EndsWith          PROCEDURE(? LookFor , ? LookIn , <? Passed>, <? Failed> )
+CwUnit_ctResult.EndsWith          PROCEDURE(STRING Bigger , STRING Smaller , <? Passed>, <? Failed> )
    CODE
-   SELF.PassFail( CHOOSE( SUB(LookIn, -SIZE(LookFor), -1) = LookFor ) , LookFor, Is:EndsWith, LookIn  ,   Passed, Failed)   
+   SELF.PassFail( CHOOSE( SUB(Bigger, -LEN(Smaller), -1) = Smaller ) , Bigger, String:EndsWith, Smaller  ,   Passed, Failed)   
 
 
 

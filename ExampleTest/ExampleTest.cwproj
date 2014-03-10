@@ -7,6 +7,7 @@
     <RootNamespace>ExampleTest</RootNamespace>
     <AssemblyName>ExampleTest</AssemblyName>
     <OutputName>ExampleTest</OutputName>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>True</DebugSymbols>
@@ -24,8 +25,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ExampleTest.clw" />
+    <Compile Include="TestPassesWhen.clw" />
     <Compile Include="TestResultTypes.clw" />
+    <Compile Include="TestStrings.clw" />
     <None Include="ExampleTest.exp" />
   </ItemGroup>
   <Import Project="$(ClarionBinPath)\SoftVelocity.Build.Clarion.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>..\CwUnit\CwUnit ExampleTest.DLL</PostBuildEvent>
+  </PropertyGroup>
 </Project>

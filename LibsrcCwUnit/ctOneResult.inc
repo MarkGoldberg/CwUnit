@@ -16,9 +16,10 @@ OperatorType:Binary    EQUATE(2)
 
 
 !------ BinaryOperators
-Is:StartsWith          EQUATE('StartsWith')
-Is:Contains            EQUATE('Contains')
-Is:EndsWith            EQUATE('EndsWith')
+String:StartsWith          EQUATE('StartsWith')
+String:Contains            EQUATE('Contains')  
+String:AppearsIn           EQUATE('AppearsIn') 
+String:EndsWith            EQUATE('EndsWith')
 
 Is:EqualTo             EQUATE('=')
 Is:NotEqualTo          EQUATE('<>')
@@ -93,9 +94,10 @@ Less             PROCEDURE(? Actual   ,? CompareTo      , <? Passed>, <? Failed>
 LessOrEqual      PROCEDURE(? Actual   ,? CompareTo      , <? Passed>, <? Failed> ) !Pass when:  Actual <= CompareTo
 IsTrue           PROCEDURE(            ? Actual         , <? Passed>, <? Failed> )
 IsFalse          PROCEDURE(            ? Actual         , <? Passed>, <? Failed> )
-StartsWith       PROCEDURE(? LookFor , ? LookIn         , <? Passed>, <? Failed> )
-Contains         PROCEDURE(? LookFor , ? LookIn         , <? Passed>, <? Failed> )
-EndsWith         PROCEDURE(? LookFor , ? LookIn         , <? Passed>, <? Failed> )
+StartsWith       PROCEDURE(STRING LookFor , STRING LookIn         , <? Passed>, <? Failed> )
+Contains         PROCEDURE(STRING Bigger  , STRING Smaller        , <? Passed>, <? Failed> )
+AppearsIn        PROCEDURE(STRING Smaller , STRING Bigger         , <? Passed>, <? Failed> )
+EndsWith         PROCEDURE(STRING LookFor , STRING LookIn         , <? Passed>, <? Failed> )
 
 !IsNullToString   PROCEDURE(*? Object),STRING
 !IsNull           PROCEDURE(           *? Object         , <? Passed>, <? Failed> )
