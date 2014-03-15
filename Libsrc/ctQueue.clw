@@ -2,9 +2,10 @@
 	MAP
 	END
 	INCLUDE('ctQueue.inc'),ONCE
+NoError  EQUATE(0) !or INCLUDE('Errors.inc')
 
-                       	COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
 eqDBG EQUATE('<4,2,7>') 
+                        COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
                    !END-COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
 !------------------------------------------------------------------------------------------------------	
 ctQueue.CONSTRUCT			PROCEDURE
@@ -97,23 +98,29 @@ ctQueue.GetFirstRow        PROCEDURE()
    RETURN SELF.GetRow(1)
 
 !------------------------------------------------------------------------------------------------------  
-ctQueue.GetPrevRow        PROCEDURE(<*BOOL IsFirstTime>)!,LONG,PROC !returns ErrorCode
+ctQueue.GetPrevRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>)!,LONG,PROC !returns ErrorCode
    CODE
-   IF ~OMITTED(IsFirstTime) AND IsFirstTime
-      IsFirstTime = FALSE
-      RETURN SELF.GetLastRow()
+   IF ~OMITTED(InPriorRow_OutCurrRow)
+      InPriorRow_OutCurrRow -= 1
+   ELSE
+      InPriorRow_OutCurrRow  = SELF.Records()
    END      
-   RETURN SELF.GetRow( POINTER(SELF.BaseQ) - 1)
+   RETURN SELF.GetRow(InPriorRow_OutCurrRow)
 
 !------------------------------------------------------------------------------------------------------	
-ctQueue.GetNextRow        PROCEDURE(<*BOOL IsFirstTime>)!,LONG,PROC !returns ErrorCode
+ctQueue.GetNextRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>)!,LONG,PROC !returns ErrorCode
+RetErr LONG,AUTO
+DesiredRow LONG,AUTO
 	CODE
-   IF ~OMITTED(IsFirstTime) AND IsFirstTime
-      IsFirstTime = FALSE
-      RETURN SELF.GetFirstRow()
-   END      
-   
-	RETURN SELF.GetRow( POINTER(SELF.BaseQ) + 1)
+                                              Assert(0,eqDBG&'V ctQueue.GetNextRow')
+   IF ~OMITTED(InPriorRow_OutCurrRow)        ;Assert(0,eqDBG&'  ctQueue.GetNextRow')
+      InPriorRow_OutCurrRow += 1
+      DesiredRow = InPriorRow_OutCurrRow
+   ELSE                                      ;Assert(0,eqDBG&'  ctQueue.GetNextRow')
+      DesiredRow  = POINTER(SELF.BaseQ) + 1  ;Assert(0,eqDBG&'  ctQueue.GetNextRow')
+   END                                       ;Assert(0,eqDBG&'  ctQueue.GetNextRow DesiredRow['& DesiredRow &']')
+   RetErr =  SELF.GetRow(DesiredRow)         ;Assert(0,eqDBG&'^ ctQueue.GetNextRow RetErr['& RetErr &']')
+   RETURN RetErr
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.GetLastRow         PROCEDURE()
@@ -133,8 +140,9 @@ ctQueue.CopyTo            PROCEDURE(*ctQueue DestQ , BOOL FreeDestFirst=TRUE) !W
 ctQueue.CopyTo            PROCEDURE(  *QUEUE DestQ , BOOL FreeDestFirst=TRUE) !will use RTL FREE(QUEUE)
 HoldPtr    LONG,AUTO
 HoldBuffer ANY
-FirstTime  BOOL(TRUE) !Signal, GetRow(1) on the first pass
+CurrPtr    LONG(0) 
    CODE
+
    HoldPtr    = POINTER(SELF.BaseQ)
    HoldBuffer = SELF.BaseQ
 
@@ -142,10 +150,11 @@ FirstTime  BOOL(TRUE) !Signal, GetRow(1) on the first pass
       FREE(DestQ) 
    END
 
-   LOOP WHILE SELF.GetNextRow(FirstTime)
+   LOOP WHILE SELF.GetNextRow(CurrPtr) = NoError
         DestQ = SELF.BaseQ
         ADD(DestQ)
    END      
 
    SELF.GetRow(HoldPtr)
    SELF.BaseQ = HoldBuffer
+ 

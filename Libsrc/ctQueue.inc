@@ -18,8 +18,8 @@ Pointer           PROCEDURE(),LONG    !Returns Pointer(Q)  !an interesting synta
 
 GetRow            PROCEDURE(LONG xPointer),LONG,PROC !returns ErrorCode
 GetFirstRow       PROCEDURE(),LONG,PROC !returns ErrorCode
-GetNextRow        PROCEDURE(<*BOOL IsFirstTime>),LONG,PROC !returns ErrorCode
-GetPrevRow        PROCEDURE(<*BOOL IsFirstTime>),LONG,PROC !returns ErrorCode
+GetNextRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>),LONG,PROC !returns ErrorCode
+GetPrevRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>),LONG,PROC !returns ErrorCode
 GetLastRow        PROCEDURE(),LONG,PROC !returns ErrorCode
 
 CopyTo            PROCEDURE(*ctQueue DestQ , BOOL FreeDestFirst=TRUE) !Will call DestQ.Free() - which will call DestQ.Del()...
@@ -30,5 +30,6 @@ CopyTo            PROCEDURE(  *QUEUE DestQ , BOOL FreeDestFirst=TRUE) !will use 
 !RTL Related to QUEUE: Add,Changes,Delete,Free, Get,Pointer, Position, Put, Records, Sort
 !Consider methods, to allow for  Yada.Records() == RECORDS(Yada) as well as RECORDS(Ydaa.BaseQ) 
 
+!Possible Refactor:  .Get(N), .Next(N), .Previous(N) (or .Prev(N)) .First(), .Last()
 
 
