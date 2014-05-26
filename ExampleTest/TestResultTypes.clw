@@ -4,7 +4,7 @@
   !The Tests here are atypical, in that they are designed to confirm Results are being passed back correctly
   
   MAP
-Test:AllPointers    PROCEDURE(INT_PTR _SELF, INT_PTR  lpTestCase)  !<-- alternate prototype
+Test:AllPointers    PROCEDURE(INT_PTR _SELF, INT_PTR  lpTestCase)  !<-- alternate prototype example (not recommended)
   END
 
 TestFixture CLASS(CwUnit_ctTestFixture)
@@ -36,12 +36,15 @@ _SELF  INT_PTR(0)
 
   TestSuite.AddTest('TestRestults','AllPointers' , _SELF, ADDRESS(Test:AllPointers)    )   !Doesn't *Have* to be a method, not recommended 
 
-!Test:AllPointers This Test has an ALTERNATE Prototype, but it still works.
-TEST:AllPointers     PROCEDURE(INT_PTR _SELF, INT_PTR lpTestCase)
+!Test:AllPointers This Test has an ALTERNATE Prototype, but it still works. (not recommended)
+TEST:AllPointers     PROCEDURE(INT_PTR _SELF, INT_PTR lpTestCase) 
+   !_SELF is needed for the prototype, but we're not using it here.
 Test  &CwUnit_ctResult
    CODE
    Test &= (lpTestCase)   
    Test.SetStatus( Status:Pass )
+
+
 
 TestFixture.NotRun         PROCEDURE(*CwUnit_ctResult Test)
    CODE

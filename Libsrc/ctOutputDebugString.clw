@@ -2,7 +2,7 @@
 
  MAP
  	MODULE('API')
-     OutputDebugString(*CSTRING Message),PASCAL,RAW,NAME('OutputDebugStringA')
+     OutputDebugString(CONST *CSTRING Message),PASCAL,RAW,NAME('OutputDebugStringA')
  	END
  END
  INCLUDE('ctOutputDebugString.inc'),ONCE

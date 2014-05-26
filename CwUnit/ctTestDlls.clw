@@ -120,7 +120,7 @@ QPtr LONG,AUTO
 TheError  LONG,AUTO
   CODE  
   LOOP QPtr = 1 TO SELF.Records()
-     SELF.GetByPtr(QPtr)
+     SELF.GetRow(QPtr)
      SELF.LoadTests( SELF.Q ) !Pass Q as Group
      PUT(SELF.Q)
   END  
@@ -131,7 +131,7 @@ ResultSetID LIKE(gtResultSets.SetID)
   CODE    
   															                           SELF.Loggers.DebugLog('v ctTestDLLs.RunAllTests')
   LOOP QPtr = 1 TO SELF.Records()
-     SELF.GetByPtr(QPtr)                                              ; SELF.Loggers.DebugLog('  ctTestDLLs.RunAllTests        QPtr['& Qptr &']')     
+     SELF.GetRow(QPtr)                                              ; SELF.Loggers.DebugLog('  ctTestDLLs.RunAllTests        QPtr['& Qptr &']')     
      ResultSetID = SELF.ResultSets.Starting( SELF.Q.FileHelper)       ; SELF.Loggers.DebugLog('  ctTestDLLs.RunAllTests ResultSetID['& ResultSetID &']')     
      SELF.RunTests( SELF.Q.AllTests, ResultSetID )                    !Pass Q as Group
      						                                                 ; SELF.Loggers.DebugLog('  ctTestDLLs.RunAllTests After RunTests')     
@@ -144,7 +144,7 @@ QPtr      LONG,AUTO
   CODE  
   												   ;SELF.Loggers.DebugLog('v ctTestDLLs.UnLoadAllTests')
   LOOP QPtr = 1 TO SELF.Records()
-     SELF.GetByPtr(QPtr)
+     SELF.GetRow(QPtr)
      SELF.UnLoadTests( SELF.Q ) !Pass Q as Group
      PUT(SELF.Q)
   END  
@@ -188,7 +188,7 @@ QPtr LONG,AUTO
 	CODE
 															;SELF.Loggers.DebugLog('v  ctTestDLLs.RunTests')
 	LOOP QPtr = 1 TO AllTests.Records()
-		AllTests.GetByPtr(QPtr)          ;SELF.Loggers.DebugLog('   ctTestDLLs.RunTests QPtr['& QPtr &'] About to run: Category['& AllTests.Q.Category &']  Test['& AllTests.Q.TestName &']')
+		AllTests.GetRow(QPtr)          ;SELF.Loggers.DebugLog('   ctTestDLLs.RunTests QPtr['& QPtr &'] About to run: Category['& AllTests.Q.Category &']  Test['& AllTests.Q.TestName &']')
 		AllTests.Run(ResultSetID, AllTests.Q)  !Pass Q Buffer as a GROUP		  
 		SELF.LogResults(AllTests.Q)		 
 	END

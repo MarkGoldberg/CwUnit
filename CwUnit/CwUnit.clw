@@ -26,18 +26,17 @@ Log          ctAsciiLogger
   	  CwUnitRunner.ShowUsage()		
   ELSE    
      Loggers.Init(Log.ILog, ODS.ILog)
-  	  ODS.Start('CwUnit')
-  	 !ODS.ClearLog()  !<------------- WAS TEMPORARY
-  	  CwUnitRunner.Init(Loggers)
+  	 ODS.Start('CwUnit')
+  	 CwUnitRunner.Init(Loggers)
      CwUnitRunner.ReadSettings('CwUnit.Ini')   !currently uses ODS.iLog
      Log.Start( CwUnitRunner.Loggers.OutputLogFile )
      IF CwUnitRunner.ClearLog
-     	  Log.ClearLog()
+     	Log.ClearLog()
      END
      
      CwUnitRunner.Go()
      IF CwUnitRunner.Interactive
-     	  MESSAGE('Interactive CwUnit Running is under Construction') !TODO: Interactive Runs
+     	MESSAGE('Interactive CwUnit Running is under Construction') !TODO: Interactive Runs
      END
      CwUnitRunner.Finished()
   END

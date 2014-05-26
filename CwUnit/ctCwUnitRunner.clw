@@ -24,17 +24,17 @@ ctCwUnitRunner.Init                       PROCEDURE(*ctLoggers Loggers)
 !=====================================
 ctCwUnitRunner.Go          PROCEDURE()
   CODE
-                                   		   	SELF.Loggers.DebugLog('v ctCwUnitRunner.Go')
+                                   		   	 SELF.Loggers.DebugLog('v ctCwUnitRunner.Go')
   SELF.TestDLLs.LoadAllTests()             ; SELF.Loggers.DebugLog('  ctCwUnitRunner.Go After .LoadAllTests, .AutoRun['& SELF.AutoRun &'] .Interactive['& SELF.Interactive &']')
   IF SELF.AutoRun OR NOT SELF.Interactive  ; SELF.Loggers.DebugLog('  ctCwUnitRunner.Go Pre .RunAllTests')
      SELF.TestDLLs.RunAllTests()
   END     
-                                   				SELF.Loggers.DebugLog('^ ctCwUnitRunner.Go')
+                                   			 SELF.Loggers.DebugLog('^ ctCwUnitRunner.Go')
 
 !=====================================
 ctCwUnitRunner.Finished                   PROCEDURE()  
   CODE
-                                   		   	SELF.Loggers.DebugLog('v ctCwUnitRunner.Finished')
+                                   		   	 SELF.Loggers.DebugLog('v ctCwUnitRunner.Finished')
   SELF.TestDLLs.UnLoadAllTests()           ; SELF.Loggers.DebugLog('^ ctCwUnitRunner.Finished')
   
 
