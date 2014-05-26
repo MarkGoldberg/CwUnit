@@ -16,4 +16,4 @@ AddTest               PROCEDURE(                 STRING TestName, INT_PTR Method
 !TeardownFixture       PROCEDURE(),VIRTUAL  --- just use DESTRUCT, unless want to control timing
                      END
  
-                     
+!CwUnit_ctTestCase   CLASS,TYPE  !<---- where will this come in ?
