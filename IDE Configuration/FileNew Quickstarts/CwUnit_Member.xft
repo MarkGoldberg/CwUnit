@@ -4,7 +4,7 @@
 		  name        = "CwUnit Test Member Module"
 		  icon        = "CW.File.EmptyFile"
 		  category    = "Clarion"
-		  defaultname = "${ProjectName}_${Number}.clw"
+		  defaultname = "CwUnitTest${Number}.clw"
 		  language    = "Clarion"/>
 	 
 	<Description>CwUnit Test Member Module</Description>
@@ -13,26 +13,44 @@
 		<File name="${FullName}" language="Clarion">
 			<![CDATA[
 
-  MEMBER('${ProjectName}')
+  MEMBER('${ProjectName}') !<--- Doesn't work, change to your global module
+  
+  !-------------------------------------------------------------
+  OMIT('Please Add the Following to the global module')
+  !Add to global module, in the MAP
+   MODULE('${FileName}') 
+           ${FileNameWithoutExtension}:AddTests(*CwUnit_ctTestSuite TestSuite)  
+   END  
 
+  !Add to global module, in MyTestSuite.Setup
+       ${FileNameWithoutExtension}:AddTests(SELF)
+  !OMIT('Please Add the Following to the global module')
+  !-------------------------------------------------------------
+ 
 ${StandardHeader.Clarion}
 
-  MEMBER('${ProjectName}')
   MAP
-Test:Example             PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2) 
   END
 
-${ProjectName}_1:AddTests   PROCEDURE(*ctCwUnit CwUnit)
-_SELF    INT_PTR(0)
-UserData INT_PTR(0) !last argument of .AddTest
-  CODE
-  CwUnit.AddTest('ExampleCategory', 'IsTrue(TRUE)'    , _SELF, ADDRESS(Test:Example) , TRUE )
-  CwUnit.AddTest('ExampleCategory', 'IsTrue(FALSE)'   , _SELF, ADDRESS(Test:Example) , FALSE)
-  CwUnit.AddTest('ExampleCategory', 'IsTrue(2)'       , _SELF, ADDRESS(Test:Example) , 2    )
- 
-Test:Example             PROCEDURE(INT_PTR _SELF,  *ctOneResult Result,  INT_PTR UserData)
+
+MyTests    CLASS(CwUnit_ctTestFixture)
+IsTrue         PROCEDURE(*CwUnit_ctResult Test)
+           END
+
+
+${FileNameWithoutExtension}:AddTests   PROCEDURE(*CwUnit_ctTestSuite TestSuite)
+  CODE   
+  MyTests.Init(MyTestSuite,'PassesWhen')
+
+  MyTests.AddTest('IsTrue(1)'   , ADDRESS(MyTests.IsTrue)      , 1)  !<-- last argument is optional
+  MyTests.AddTest('IsTrue(0)'   , ADDRESS(MyTests.IsTrue)      , 0)
+  MyTests.AddTest('IsTrue(2)'   , ADDRESS(MyTests.IsTrue)      , 2)
+
+
+!=============================== METHODS
+MyTests.IsTrue         PROCEDURE(*CwUnit_ctResult Test)
    CODE
-   Result.IsTrue( UserData2 ) 
+   Test.IsTrue( Test.Data1 )
 
 ]]>
 		</File>
