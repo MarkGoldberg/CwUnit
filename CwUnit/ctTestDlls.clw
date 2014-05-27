@@ -1,12 +1,31 @@
   MEMBER()
+
+!Region Notices 
+! ================================================================================
+! Notice : Copyright (C) 2014, Mark Goldberg
+!          Distributed under LGPLv3 (http://www.gnu.org/licenses/lgpl.html)
+!
+!    This file is part of CwUnit (https://github.com/MarkGoldberg/CwUnit)
+!
+!    CwUnit is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+!
+!    CwUnit is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with CwUnit.  If not, see <http://www.gnu.org/licenses/>.
+! ================================================================================
+!EndRegion Notices 
+
   INCLUDE('ctTestDLLs.inc'),ONCE
+  INCLUDE(   'Windows.inc'),ONCE   !LoadLibary,GetProcAddress,FreeLibrary
 
   MAP
-  		 MODULE('')
-            LoadLibrary    (         CONST *CSTRING),HMODULE,PASCAL,NAME('LoadLibraryA')
-            FreeLibrary    (HMODULE                ),BOOL,PASCAL,PROC
-            GetProcAddress (HMODULE, CONST *CSTRING),LONG,PASCAL
-		 END
   END
   
 fpGetInterface INT_PTR,NAME('GetInterface'),STATIC	!Must be STATIC (all modular data is static)
@@ -61,8 +80,9 @@ ctTestDLLs.Init                           PROCEDURE(*ctLoggers Loggers)
 ctTestDLLs.Get_ICwUnit                    PROCEDURE(*gtTestDLL TestDLL)!,BOOL,PROC !TRUE when ICwUnit was found and set
 szFileName     CSTRING(FILE:MaxFilePath)
 szGet_ICwUnit  CSTRING(ExportName:Get_ICwUnit),STATIC !Not required to be static, but it never changes...
+HoldPath       STRING(FILE:MaxFilePath)
    CODE   																	
-   szFileName = TestDLL.FileHelper.WholeFileName()                     ;SELF.Loggers.DebugLog('v  ctTestDLLs.Get_ICwUnit File['& szFileName &']')
+   szFileName = TestDLL.FileHelper.WholeFileName()                     ;SELF.Loggers.DebugLog('v  ctTestDLLs.Get_ICwUnit File['& szFileName &'] = AbsolutePath ['& TestDLL.FileHelper.AbsolutePath() &']')
    TestDLL.CwUnit &= NULL                                               
    TestDLL.hLib    = 0   
 
@@ -74,6 +94,7 @@ szGet_ICwUnit  CSTRING(ExportName:Get_ICwUnit),STATIC !Not required to be static
 	      
    ELSE
    		TestDLL.LoadError = NoError   		
+   		HoldPath = LONGPATH()
    		SETPATH(TestDLL.FileHelper.DriveDir() )   !<-------- Is this a good idea - probably - as the DLL may have DLL dependencies which it would look for in it's current folder. (guessing at this behavior)
    		
 			szFileName = TestDLL.FileHelper.WholeFileName()
@@ -87,7 +108,7 @@ szGet_ICwUnit  CSTRING(ExportName:Get_ICwUnit),STATIC !Not required to be static
 				 	SELF.Loggers.Log('Failed to find GET_ICwUnit in ['& szFileName &']')
 				END
 			END
-		
+			SETPATH(HoldPath)		
    END			
    																	                     ;SELF.Loggers.DebugLog('^  ctTestDLLs.Get_ICwUnit File['& szFileName &'] Returning['& CHOOSE( NOT TestDLL.CwUnit &= NULL) &']')
    RETURN CHOOSE( NOT TestDLL.CwUnit &= NULL)
@@ -122,7 +143,7 @@ QPtr LONG,AUTO
 TheError  LONG,AUTO
   CODE  
   LOOP QPtr = 1 TO SELF.Records()
-     SELF.GetByPtr(QPtr)
+     SELF.GetRow(QPtr)
      SELF.LoadTests( SELF.Q ) !Pass Q as Group
      PUT(SELF.Q)
   END  
@@ -133,7 +154,7 @@ ResultSetID LIKE(gtResultSets.SetID)
   CODE    
   															                           SELF.Loggers.DebugLog('v ctTestDLLs.RunAllTests')
   LOOP QPtr = 1 TO SELF.Records()
-     SELF.GetByPtr(QPtr)                                              ; SELF.Loggers.DebugLog('  ctTestDLLs.RunAllTests        QPtr['& Qptr &']')     
+     SELF.GetRow(QPtr)                                              ; SELF.Loggers.DebugLog('  ctTestDLLs.RunAllTests        QPtr['& Qptr &']')     
      ResultSetID = SELF.ResultSets.Starting( SELF.Q.FileHelper)       ; SELF.Loggers.DebugLog('  ctTestDLLs.RunAllTests ResultSetID['& ResultSetID &']')     
      SELF.RunTests( SELF.Q.AllTests, ResultSetID )                    !Pass Q as Group
      						                                                 ; SELF.Loggers.DebugLog('  ctTestDLLs.RunAllTests After RunTests')     
@@ -146,7 +167,7 @@ QPtr      LONG,AUTO
   CODE  
   												   ;SELF.Loggers.DebugLog('v ctTestDLLs.UnLoadAllTests')
   LOOP QPtr = 1 TO SELF.Records()
-     SELF.GetByPtr(QPtr)
+     SELF.GetRow(QPtr)
      SELF.UnLoadTests( SELF.Q ) !Pass Q as Group
      PUT(SELF.Q)
   END  
@@ -170,16 +191,16 @@ ctTestDLLs.LoadTests PROCEDURE(*gtTestDLL TestDLL)
 !=====================================
 LoadTests:LoadFromDLL	ROUTINE
 	DATA
-QPtr            LONG,AUTO
-AllTests        &ctAllTests
-OneTestFromDLL  LIKE(gtOneTestFromDLL)
+QPtr                  LONG,AUTO
+AllTests              &ctAllTests
+OneTestMethodFromDLL  LIKE(CwUnit_gtTestMethod)
 	CODE
 	AllTests &= SELF.Q.AllTests
 	
 	LOOP QPtr = 1 TO SELF.Q.CWUnit.GetTestCount() 
-	   CLEAR(                         OneTestFromDLL )
-		IF SELF.Q.CWUnit.GetTest(QPtr, OneTestFromDLL )	= NoError
-		    AllTests.Add(              OneTestFromDLL ) 		
+	   CLEAR(                         OneTestMethodFromDLL )
+		IF SELF.Q.CWUnit.GetTest(QPtr, OneTestMethodFromDLL )	= NoError
+		    AllTests.Add(              OneTestMethodFromDLL ) 		
 		END
 	END
 
@@ -190,16 +211,24 @@ QPtr LONG,AUTO
 	CODE
 															;SELF.Loggers.DebugLog('v  ctTestDLLs.RunTests')
 	LOOP QPtr = 1 TO AllTests.Records()
-		AllTests.GetByPtr(QPtr)                ;SELF.Loggers.DebugLog('   ctTestDLLs.RunTests QPtr['& QPtr &']')
-		AllTests.Run(ResultSetID)
-		
-		SELF.Loggers.Log('Category['& AllTests.Q.Category &']  Test['& AllTests.Q.TestName &']')
-		SELF.Loggers.Log('  Result['& ALLTests.Q.TimedResults.Q.OneResult.StatusToString() &']')
-		SELF.Loggers.Log('  Output['& ALLTests.Q.TimedResults.Q.OneResult.Output           &']')
-		
+		AllTests.GetRow(QPtr)          ;SELF.Loggers.DebugLog('   ctTestDLLs.RunTests QPtr['& QPtr &'] About to run: Category['& AllTests.Q.Category &']  Test['& AllTests.Q.TestName &']')
+		AllTests.Run(ResultSetID, AllTests.Q)  !Pass Q Buffer as a GROUP		  
+		SELF.LogResults(AllTests.Q)		 
 	END
 															;SELF.Loggers.DebugLog('^  ctTestDLLs.RunTests')	
 
+!=====================================	
+ctTestDLLs.LogResults                     PROCEDURE(*gtTestMethodWithResults  OneTest)!,VIRTUAL
+   !Assumes TimedResults.Q is aligned
+	CODE
+	SELF.Loggers.Log('Category['& OneTest.Category                                  &']' & |
+                       ' Test['& OneTest.TestName                                  &']' & |
+ 	                  ' Result['& OneTest.TimedResults.Q.OneResult.StatusToString() &']' & |
+	                  ' Output['& OneTest.TimedResults.Q.OneResult.Output           &']' & |
+	                   ' Start['& OneTest.TimedResults.Q.Started.ToString()         &']' & |
+                   ' Finished['& OneTest.TimedResults.Q.Finished.ToString()        &']' & |
+	               ' SpanTicks['& OneTest.TimedResults.Q.Started.SpanTicks( OneTest.TimedResults.Q.Started.DT, OneTest.TimedResults.Q.Finished.DT)  &']')	
+	SELF.Loggers.Log('-{47}')
 !=====================================
 ctTestDLLs.UnLoadTests PROCEDURE(*gtTestDLL TestDLL)
 	CODE	

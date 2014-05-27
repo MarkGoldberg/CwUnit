@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<Template originator   = "SoftVelocity">
+
+	<!-- Template Header -->
+	<TemplateConfiguration>
+		<Name>CwUnit TestDLL</Name>
+		<Category>Clarion for Windows</Category>
+		<Icon>CW.Project.EmptyProject</Icon>
+		<Description>CwUnit TestDLL</Description>
+	</TemplateConfiguration>
+
+	<Actions>
+		<Open filename = "${ProjectName}.clw"/>
+	</Actions>
+
+	<Project name = "${ProjectName}" directory = "." language = "Clarion">
+		<PropertyGroup>
+			<OutputType>Dll</OutputType>
+		</PropertyGroup>
+
+		<Files>
+			<File name="${ProjectName}.clw">
+				<![CDATA[
+  PROGRAM
+
+! ================================================================================
+! CwUnit Unit Test DLL
+! Please add {include %CwUnit%\CwUnit.RED} to your .RED
+! ================================================================================
+
+${StandardHeader.Clarion}
+
+
+  INCLUDE('CwUnit_ctTestFixture.inc'),ONCE   !implies ctCwUnit.inc
+  INCLUDE(         'ctOneResult.inc'),ONCE
+
+  MAP
+    GetICwUnit(INT_PTR UserData),*ICwUnit,NAME(ExportName:Get_ICwUnit)   
+
+    MODULE('${ProjectName}_1.clw') 
+            ${ProjectName}_1:AddTests(*CwUnit_ctTestSuite TestSuite)  
+    END  
+  END
+
+
+
+  INCLUDE('ctOutputDebugString.inc'),ONCE
+ODS        ctOutputDebugString   
+
+MyTestSuite      CLASS(CwUnit_ctTestSuite)
+Setup               PROCEDURE(INT_PTR UserData),DERIVED
+Teardown            PROCEDURE(),DERIVED
+                 END
+
+  CODE
+  ODS.Add('ExampleTest - MainCode') !<-- never runs
+  
+  
+GetICwUnit                     PROCEDURE(INT_PTR UserData)  !<-- Exported Procedure
+   !UserData is for Future Use
+   CODE            
+                                        ODS.Add('ExampleTest GetICwUnit')
+   RETURN MyTestSuite.GetICwUnit(UserData)
+
+
+MyTestSuite.Setup                PROCEDURE(INT_PTR UserData)
+   CODE
+                                        ODS.Add('v ExampleTest MyTestSuite.Setup TestCount['& SELF.ICwUnit.GetTestCount() &'] UserData['& UserData &']')
+   IF SELF.ICwUnit.GetTestCount() = 0                                       
+      !v================================================= <=== ADD TESTS HERE
+      ${ProjectName}_1:AddTests(SELF)
+      !^================================================= <=== ADD TESTS HERE
+   END      
+                                        ODS.Add('^ ExampleTest MyTestSuite.Setup TestCount['& SELF.ICwUnit.GetTestCount() &']')
+  
+MyTestSuite.Teardown            PROCEDURE()!,DERIVED
+   CODE
+                                        ODS.Add('ExampleTest.MyTestSuite.Teardown')
+
+   
+   ]]>
+				</File>
+			<File name="${ProjectName}.exp">
+				<![CDATA[LIBRARY '${ProjectName}' GUI
+EXPORTS
+
+   GET_ICWUNIT @?
+]]>
+			</File>
+         <File name="${ProjectName}_1.clw">
+            <![CDATA[
+  MEMBER('${ProjectName}')
+  MAP
+  END
+
+!Region =============== MODULE DATA ================
+
+MyTests    CLASS(CwUnit_ctTestFixture)
+IsTrue         PROCEDURE(*CwUnit_ctResult Test)
+           END
+
+!EndRegion =============== MODULE DATA ================ 
+
+
+${ProjectName}_1:AddTests   PROCEDURE(*CwUnit_ctTestSuite TestSuite)
+  CODE   
+  MyTests.Init(MyTestSuite,'PassesWhen')
+
+  MyTests.AddTest('IsTrue(1)'   , ADDRESS(MyTests.IsTrue)      , 1)  !<-- last argument is optional
+  MyTests.AddTest('IsTrue(0)'   , ADDRESS(MyTests.IsTrue)      , 0)
+  MyTests.AddTest('IsTrue(2)'   , ADDRESS(MyTests.IsTrue)      , 2)
+
+
+!Region MyTests Methods
+MyTests.IsTrue         PROCEDURE(*CwUnit_ctResult Test)
+   CODE
+   Test.IsTrue( Test.Data1 )
+
+!EndRegion MyTests Methods
+
+]]>
+         </File>
+		</Files>
+	</Project>
+</Template>
+

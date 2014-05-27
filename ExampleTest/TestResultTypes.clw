@@ -1,78 +1,102 @@
 
   MEMBER('ExampleTest.clw')
+
+!Region Notices 
+! ================================================================================
+! Notice : Copyright (C) 2014, Mark Goldberg
+!          Distributed under LGPLv3 (http://www.gnu.org/licenses/lgpl.html)
+!
+!    This file is part of CwUnit (https://github.com/MarkGoldberg/CwUnit)
+!
+!    CwUnit is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+!
+!    CwUnit is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with CwUnit.  If not, see <http://www.gnu.org/licenses/>.
+! ================================================================================
+!EndRegion Notices 
   
+  !The Tests here are atypical, in that they are designed to confirm Results are being passed back correctly
+  !The Tests here are atypical, in that they are designed to confirm Results are being passed back correctly
+  !The Tests here are atypical, in that they are designed to confirm Results are being passed back correctly
+  !The Tests here are atypical, in that they are designed to confirm Results are being passed back correctly
   !The Tests here are atypical, in that they are designed to confirm Results are being passed back correctly
   
   MAP
-Test:AllINT_PTRs    PROCEDURE(INT_PTR UserData1, INT_PTR  lpOneResult, INT_PTR UserData2)  !<-- alternate prototype
-
-Test:NotRun         PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2) !<--- recommended prototype
-Test:Pass           PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
-Test:Ignore         PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
-Test:Fail           PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
-Test:Inconclusive   PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
-Test:Running        PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
-Test:IsTrue         PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
-Test:Is             PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
+Test:AllPointers    PROCEDURE(INT_PTR _SELF, INT_PTR  lpTestCase)  !<-- alternate prototype example (not recommended)
   END
 
-AddTests_TestResultTypes   PROCEDURE(*ctCwUnit CwUnit)
+TestFixture CLASS(CwUnit_ctTestFixture)
+NotRun         PROCEDURE(*CwUnit_ctResult Test)
+Pass           PROCEDURE(*CwUnit_ctResult Test)
+Ignore         PROCEDURE(*CwUnit_ctResult Test)
+Fail           PROCEDURE(*CwUnit_ctResult Test)
+Inconclusive   PROCEDURE(*CwUnit_ctResult Test)
+Running        PROCEDURE(*CwUnit_ctResult Test)
+IsTrue         PROCEDURE(*CwUnit_ctResult Test)
+            END
+
+
+AddTests_TestResultTypes   PROCEDURE(*CwUnit_ctTestSuite TestSuite)
+_SELF  INT_PTR(0)
   CODE
-  CwUnit.AddTest('TestRestuls','AllINT_PTRs'  , ADDRESS(Test:AllINT_PTRs) , 0) !, 0)
+  TestFixture.Init(TestSuite,'TestResults - ABNORMAL:OK TO SEE FAILURE')
+
+  TestFixture.AddTest('NotRun'      , ADDRESS(TestFixture.NotRun)         )
+  TestFixture.AddTest('Pass'        , ADDRESS(TestFixture.Pass)           )
+  TestFixture.AddTest('Fail'        , ADDRESS(TestFixture.Fail)           )
+  TestFixture.AddTest('Ignore'      , ADDRESS(TestFixture.Ignore)         )
+  TestFixture.AddTest('Inconclusive', ADDRESS(TestFixture.Inconclusive)   )
+  TestFixture.AddTest('Running'     , ADDRESS(TestFixture.Running)        )  
   
-  CwUnit.AddTest('TestResults', 'NotRun'      , ADDRESS(Test:NotRun)      , 0) !, 0)
-  CwUnit.AddTest('TestResults', 'Pass'        , ADDRESS(Test:Pass)        , 0) !, 0)
-  CwUnit.AddTest('TestResults', 'Fail'        , ADDRESS(Test:Fail)        , 0) !, 0)
-  CwUnit.AddTest('TestResults', 'Ignore'      , ADDRESS(Test:Ignore)      , 0) !, 0)
-  CwUnit.AddTest('TestResults', 'Inconclusive', ADDRESS(Test:Inconclusive), 0) !, 0)
-  CwUnit.AddTest('TestResults', 'Running'     , ADDRESS(Test:Running)     , 0) !, 0)
-  
-  CwUnit.AddTest('TestResults', 'IsTrue(1)'   , ADDRESS(Test:IsTrue)      , 0, 1)
-  CwUnit.AddTest('TestResults', 'IsTrue(0)'   , ADDRESS(Test:IsTrue)      , 0, 0)
-  CwUnit.AddTest('TestResults', 'IsTrue(2)'   , ADDRESS(Test:IsTrue)      , 0, 2)
+  TestFixture.AddTest('IsTrue(1)'   , ADDRESS(TestFixture.IsTrue)      , 1)
+  TestFixture.AddTest('IsTrue(0)'   , ADDRESS(TestFixture.IsTrue)      , 0)
+  TestFixture.AddTest('IsTrue(2)'   , ADDRESS(TestFixture.IsTrue)      , 2)
 
-  CwUnit.AddTest('TestResults', 'Is:IsTrue(1)'   , ADDRESS(Test:Is)      , 0, 1)
-  CwUnit.AddTest('TestResults', 'Is:IsTrue(0)'   , ADDRESS(Test:Is)      , 0, 0)
-  CwUnit.AddTest('TestResults', 'Is:IsTrue(2)'   , ADDRESS(Test:Is)      , 0, 2)
+  TestSuite.AddTest('TestRestults','AllPointers' , _SELF, ADDRESS(Test:AllPointers)    )   !Doesn't *Have* to be a method, not recommended 
+
+!Test:AllPointers This Test has an ALTERNATE Prototype, but it still works. (not recommended)
+TEST:AllPointers     PROCEDURE(INT_PTR _SELF, INT_PTR lpTestCase) 
+   !_SELF is needed for the prototype, but we're not using it here.
+Test  &CwUnit_ctResult
+   CODE
+   Test &= (lpTestCase)   
+   Test.SetStatus( Status:Pass )
 
 
-!Test:AllINT_PTRs This Test has an ALTERNATE Prototype, but it still works.
-Test:AllINT_PTRs     PROCEDURE(INT_PTR UserData1, INT_PTR lpOneResult,  INT_PTR UserData2)
-Result  &ctOneResult
-   CODE
-   Result &= (lpOneResult)   
-   Result.Status = Status:Pass
 
-Test:NotRun         PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
+TestFixture.NotRun         PROCEDURE(*CwUnit_ctResult Test)
    CODE
-   Result.Status = Status:NotRun 
+   Test.SetStatus( Status:NotRun )
    
-Test:Pass           PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
+TestFixture.Pass           PROCEDURE(*CwUnit_ctResult Test)
    CODE
-   Result.Status = Status:Pass    
+   Test.SetStatus( Status:Pass )
    
-Test:Ignore         PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
+TestFixture.Ignore         PROCEDURE(*CwUnit_ctResult Test)
    CODE
-   Result.Status = Status:Ignore 
+   Test.SetStatus( Status:Ignore )
    
-Test:Fail           PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
+TestFixture.Fail           PROCEDURE(*CwUnit_ctResult Test)
    CODE
-   Result.Status = Status:Fail  
+   Test.SetStatus( Status:Fail )
    
-Test:Inconclusive   PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
+TestFixture.Inconclusive   PROCEDURE(*CwUnit_ctResult Test)
    CODE
-   Result.Status = Status:Inconclusive 
+   Test.SetStatus( Status:Inconclusive )
    
-Test:Running        PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
+TestFixture.Running        PROCEDURE(*CwUnit_ctResult Test)
    CODE
-   Result.Status = Status:Running      
+   Test.SetStatus( Status:Running )
 
-Test:IsTrue         PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
+TestFixture.IsTrue         PROCEDURE(*CwUnit_ctResult Test)
    CODE
-   Result.IsTrue( UserData2 )
+   Test.IsTrue( Test.Data1 )
 
-Test:Is          PROCEDURE(INT_PTR UserData1,  *ctOneResult Result,  INT_PTR UserData2)
-   CODE
-   Result.Is( UserData2, Op:IsTrue )
-   
-   

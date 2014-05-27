@@ -1,5 +1,27 @@
+!Region Notices 
+! ================================================================================
+! Notice : Copyright (C) 2014, Mark Goldberg
+!          Distributed under LGPLv3 (http://www.gnu.org/licenses/lgpl.html)
+!
+!    This file is part of CwUnit (https://github.com/MarkGoldberg/CwUnit)
+!
+!    CwUnit is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+!
+!    CwUnit is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with CwUnit.  If not, see <http://www.gnu.org/licenses/>.
+! ================================================================================
+!EndRegion Notices 
 
-	!INCLUDE('WinEQU.clw),ONCE
+  !INCLUDE( 'WinEQU.clw),ONCE
+   INCLUDE('Windows.inc'),ONCE
 !UINT              EQUATE(UNSIGNED)	
 	
 gtFnsplit   		GROUP,TYPE
@@ -32,6 +54,7 @@ FnSplit                 PROCEDURE(*gtFnSplit xaInfo)
 FnSplit                 PROCEDURE(  STRING xPath, <*STRING xaDrive>, <*STRING xaDir>, <*STRING xaName>, <*STRING xaExt>)
 ToString                PROCEDURE(CONST *gtFnSplit SpiltFile, STRING Delimiter),STRING
 
+AbsolutePath            PROCEDURE(STRING FleName),STRING
 WholeFileName           PROCEDURE(*gtFnSplit xaInfo),STRING
 DriveDir                PROCEDURE(  STRING xPath),STRING
 BaseName                PROCEDURE(  STRING xPath),STRING
@@ -55,7 +78,8 @@ SplitInfo            	LIKE(gtFnsplit)
 NewAndSetFileName       PROCEDURE(STRING newFileName),*ctFileHelper
 SetFileName          	PROCEDURE(STRING newFileName)
 Exists               	PROCEDURE(),BOOL
-WholeFileName        PROCEDURE(),STRING
+AbsolutePath            PROCEDURE(),STRING
+WholeFileName           PROCEDURE(),STRING
 DriveDir                PROCEDURE(),STRING
 BaseName                PROCEDURE(),STRING
 Extension               PROCEDURE(),STRING

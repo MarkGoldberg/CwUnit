@@ -1,4 +1,27 @@
   MEMBER()
+
+!Region Notices 
+! ================================================================================
+! Notice : Copyright (C) 2014, Mark Goldberg
+!          Distributed under LGPLv3 (http://www.gnu.org/licenses/lgpl.html)
+!
+!    This file is part of CwUnit (https://github.com/MarkGoldberg/CwUnit)
+!
+!    CwUnit is free software: you can redistribute it and/or modify
+!    it under the terms of the GNU General Public License as published by
+!    the Free Software Foundation, either version 3 of the License, or
+!    (at your option) any later version.
+!
+!    CwUnit is distributed in the hope that it will be useful,
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!    GNU General Public License for more details.
+!
+!    You should have received a copy of the GNU General Public License
+!    along with CwUnit.  If not, see <http://www.gnu.org/licenses/>.
+! ================================================================================
+!EndRegion Notices 
+
   MAP
   END
   INCLUDE('ctCwUnitRunner.inc'),ONCE
@@ -24,17 +47,17 @@ ctCwUnitRunner.Init                       PROCEDURE(*ctLoggers Loggers)
 !=====================================
 ctCwUnitRunner.Go          PROCEDURE()
   CODE
-                                   		   	SELF.Loggers.DebugLog('v ctCwUnitRunner.Go')
+                                   		   	 SELF.Loggers.DebugLog('v ctCwUnitRunner.Go')
   SELF.TestDLLs.LoadAllTests()             ; SELF.Loggers.DebugLog('  ctCwUnitRunner.Go After .LoadAllTests, .AutoRun['& SELF.AutoRun &'] .Interactive['& SELF.Interactive &']')
   IF SELF.AutoRun OR NOT SELF.Interactive  ; SELF.Loggers.DebugLog('  ctCwUnitRunner.Go Pre .RunAllTests')
      SELF.TestDLLs.RunAllTests()
   END     
-                                   				SELF.Loggers.DebugLog('^ ctCwUnitRunner.Go')
+                                   			 SELF.Loggers.DebugLog('^ ctCwUnitRunner.Go')
 
 !=====================================
 ctCwUnitRunner.Finished                   PROCEDURE()  
   CODE
-                                   		   	SELF.Loggers.DebugLog('v ctCwUnitRunner.Finished')
+                                   		   	 SELF.Loggers.DebugLog('v ctCwUnitRunner.Finished')
   SELF.TestDLLs.UnLoadAllTests()           ; SELF.Loggers.DebugLog('^ ctCwUnitRunner.Finished')
   
 

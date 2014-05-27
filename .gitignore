@@ -1,0 +1,4 @@
+*.sublime-workspace
+*.MAP
+*.FileList.xml
+CwUnit/Testit.bat

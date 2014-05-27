@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<Template author="SoftVelocity" version="1.0">
+	<Config
+		  name        = "CwUnit Test Member Module"
+		  icon        = "CW.File.EmptyFile"
+		  category    = "Clarion"
+		  defaultname = "CwUnitTest${Number}.clw"
+		  language    = "Clarion"/>
+	 
+	<Description>CwUnit Test Member Module</Description>
+	
+	<Files>
+		<File name="${FullName}" language="Clarion">
+			<![CDATA[
+
+  MEMBER('${ProjectName}') !<--- Doesn't work, change to your global module
+  
+  !-------------------------------------------------------------
+  OMIT('Please Add the Following to the global module')
+  !Add to global module, in the MAP
+   MODULE('${FileName}') 
+           ${FileNameWithoutExtension}:AddTests(*CwUnit_ctTestSuite TestSuite)  
+   END  
+
+  !Add to global module, in MyTestSuite.Setup
+       ${FileNameWithoutExtension}:AddTests(SELF)
+  !OMIT('Please Add the Following to the global module')
+  !-------------------------------------------------------------
+ 
+${StandardHeader.Clarion}
+
+  MAP
+  END
+
+
+MyTests    CLASS(CwUnit_ctTestFixture)
+IsTrue         PROCEDURE(*CwUnit_ctResult Test)
+           END
+
+
+${FileNameWithoutExtension}:AddTests   PROCEDURE(*CwUnit_ctTestSuite TestSuite)
+  CODE   
+  MyTests.Init(MyTestSuite,'PassesWhen')
+
+  MyTests.AddTest('IsTrue(1)'   , ADDRESS(MyTests.IsTrue)      , 1)  !<-- last argument is optional
+  MyTests.AddTest('IsTrue(0)'   , ADDRESS(MyTests.IsTrue)      , 0)
+  MyTests.AddTest('IsTrue(2)'   , ADDRESS(MyTests.IsTrue)      , 2)
+
+
+!=============================== METHODS
+MyTests.IsTrue         PROCEDURE(*CwUnit_ctResult Test)
+   CODE
+   Test.IsTrue( Test.Data1 )
+
+]]>
+		</File>
+	</Files>
+	<AdditionalOptions/>
+</Template>
+
+
