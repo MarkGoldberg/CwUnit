@@ -2,7 +2,7 @@
 
 !Region Notices 
 ! ================================================================================
-! Program: CwUnit - Clarion for Windows Unit Test Runner
+! Program: ExampleText - Example DLL to run by CwUnit - Clarion for Windows Unit Test Runner
 ! Created: March, 1st, 2014 by Mark Goldberg
 ! ================================================================================
 !
