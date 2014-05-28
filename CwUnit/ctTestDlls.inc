@@ -41,8 +41,8 @@ gtTestDLL	  GROUP(gtTestDLLBase),TYPE
 AllTests         &ctAllTests
 				  END
 
-qtTestDLL     QUEUE(gtTestDLL)
-			     END
+qtTestDLL     QUEUE(gtTestDLL),TYPE
+			     END 
 
 
 
