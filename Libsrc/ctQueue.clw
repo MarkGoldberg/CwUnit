@@ -39,13 +39,13 @@ ctQueue.CONSTRUCT			PROCEDURE
 !------------------------------------------------------------------------------------------------------	
 ctQueue.DESTRUCT				PROCEDURE
 	CODE 
-	                     COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
+                        COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
                     Assert(0,eqDBG&'v ctQueue.DESTRUCT ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &'] Addr['& ADDRESS(SELF) &']')
                     !END-COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
    
 	SELF.Free()      !!  ;Assert(0,eqDBG&'  ctQueue.DESTRUCT after Free')
 	SELF._Dispose()  !!  ;Assert(0,eqDBG&'  ctQueue.DESTRUCT after _Dispose')
-                     !!   Assert(0,eqDBG&'^ ctQueue.DESTRUCT ['& SELF.Description() &']')
+                    !!   Assert(0,eqDBG&'^ ctQueue.DESTRUCT ['& SELF.Description() &']')
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue._Dispose           PROCEDURE()!,VIRTUAL                     
@@ -139,13 +139,18 @@ ctQueue.GetFirstRow        PROCEDURE()
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.GetPrevRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>)!,LONG,PROC !returns ErrorCode
+DesiredRow LONG,AUTO
    CODE
    IF ~OMITTED(InPriorRow_OutCurrRow)
       InPriorRow_OutCurrRow -= 1
+      DesiredRow = InPriorRow_OutCurrRow
    ELSE
-      InPriorRow_OutCurrRow  = SELF.Records()
+      DesiredRow  = POINTER(SELF.BaseQ) - 1
+      IF DesiredRow < 0
+         DesiredRow = SELF.Count()  !<-- POLICY: Could be argued to set DesiredRow=0 instead.
+      END     
    END      
-   RETURN SELF.GetRow(InPriorRow_OutCurrRow)
+   RETURN SELF.GetRow(DesiredRow)
 
 !------------------------------------------------------------------------------------------------------	
 ctQueue.GetNextRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>)!,LONG,PROC !returns ErrorCode
