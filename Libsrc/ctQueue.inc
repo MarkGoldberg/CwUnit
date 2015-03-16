@@ -31,6 +31,7 @@ Description       PROCEDURE(),STRING,VIRTUAL
 Free              PROCEDURE,VIRTUAL                
 Del               PROCEDURE,VIRTUAL                
 Put               PROCEDURE,VIRTUAL
+Add               PROCEDURE,VIRTUAL   !pretty meaningless, could add a sortOrder string...
 
 Count             PROCEDURE(),LONG    !Alias of .Records
 Records           PROCEDURE(),LONG    !Returns Records(Q)  !an interesting syntax:  RECORDS(MyQueueClass) works
