@@ -46,6 +46,9 @@ GetLastRow        PROCEDURE(),LONG,PROC !returns ErrorCode
 
 CopyTo            PROCEDURE(*ctQueue DestQ , BOOL FreeDestFirst=TRUE) !Will call DestQ.Free() - which will call DestQ.Del()...
 CopyTo            PROCEDURE(  *QUEUE DestQ , BOOL FreeDestFirst=TRUE) !will use RTL FREE(DestQ)
+
+Dump              PROCEDURE(STRING xPrefix)
+DumpOneRow        PROCEDURE(STRING xPrefix),VIRTUAL
           END
    
 

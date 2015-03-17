@@ -172,7 +172,7 @@ HoldBuffer ANY
 CurrPtr    LONG(0) 
    CODE
 
-   HoldPtr    = POINTER(SELF.BaseQ)
+   HoldPtr    = SELF.Pointer()
    HoldBuffer = SELF.BaseQ
 
    IF FreeDestFirst
@@ -187,3 +187,25 @@ CurrPtr    LONG(0)
    SELF.GetRow(HoldPtr)
    SELF.BaseQ = HoldBuffer
  
+
+
+!------------------------------------------------------------------------------------------------------  
+ctQueue.Dump              PROCEDURE(STRING xPrefix)
+HoldPtr    LONG,AUTO
+HoldBuffer ANY
+CurrPtr    LONG !NoAuto
+   CODE
+   HoldPtr    = SELF.Pointer()
+   HoldBuffer = SELF.BaseQ
+   !-------------
+   LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
+      SELF.DumpOneRow(xPrefix)
+   END
+   !-------------
+   SELF.GetRow(HoldPtr)
+   SELF.BaseQ = HoldBuffer
+
+!------------------------------------------------------------------------------------------------------  
+ctQueue.DumpOneRow        PROCEDURE(STRING xPrefix)!,VIRTUAL
+   CODE
+   !stub method, (could write something using reflection...)
