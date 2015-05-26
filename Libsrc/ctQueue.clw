@@ -27,25 +27,24 @@
 	INCLUDE('ctQueue.inc'),ONCE
 NoError  EQUATE(0)      !or INCLUDE('Errors.inc')
 
-Mod:Assert EQUATE(TRUE) !use FALSE to show the ASSERT,  only set to FALSE if you have a DebugerClass which uses SYSTEM{PROP:AssertHook2}
-
 eqDBG EQUATE('<4,2,7>') 
 !!                        COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
 !!                   !END-COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
 !------------------------------------------------------------------------------------------------------	
 ctQueue.CONSTRUCT			PROCEDURE
 	CODE 
+   SELF.IsTracing = FALSE
    !SELF.Q     &= NEW qt   !<-- example to appear in derived class
 	!SELF.BaseQ &= SELF.Q   !<-- example to appear in derived class
 
 !------------------------------------------------------------------------------------------------------	
 ctQueue.DESTRUCT				PROCEDURE
 	CODE 
-                    Assert(MOD:Assert,eqDBG&'v ctQueue.DESTRUCT ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &'] Addr['& ADDRESS(SELF) &']')
+                    Assert(~SELF.IsTracing, eqDBG&'v ctQueue.DESTRUCT ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &'] Addr['& ADDRESS(SELF) &']')                    
    
-	SELF.Free()      !!  ;Assert(MOD:Assert,eqDBG&'  ctQueue.DESTRUCT after Free')
-	SELF._Dispose()  !!  ;Assert(MOD:Assert,eqDBG&'  ctQueue.DESTRUCT after _Dispose')
-                    !!   Assert(MOD:Assert,eqDBG&'^ ctQueue.DESTRUCT ['& SELF.Description() &']')
+	SELF.Free()      !!  ;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.DESTRUCT after Free')
+	SELF._Dispose()  !!  ;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.DESTRUCT after _Dispose')
+                    !!   Assert(~SELF.IsTracing, eqDBG&'^ ctQueue.DESTRUCT ['& SELF.Description() &']')
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue._Dispose           PROCEDURE()!,VIRTUAL                     
@@ -60,27 +59,27 @@ ctQueue.Description       PROCEDURE()!,STRING,VIRTUAL
 !------------------------------------------------------------------------------------------------------	
 ctQueue.Free					PROCEDURE
 	CODE 
-	IF (SELF.BaseQ &= NULL)                ;Assert(MOD:Assert,eqDBG&'v ctQueue.Free early return .GenericQ &= NULL')
+	IF (SELF.BaseQ &= NULL)                ;Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free early return .GenericQ &= NULL')
        RETURN 
    END
-                                           Assert(MOD:Assert,eqDBG&'v ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
-	LOOP                                   ;Assert(MOD:Assert,eqDBG&'v ctQueue.Free ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &']')
+                                           Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
+	LOOP                                   ;Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &']')
 	   GET(SELF.BaseQ, 1)
 	   IF ERRORCODE() THEN BREAK END
-                                           Assert(MOD:Assert,eqDBG&'v ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
-	   SELF.Del()                          ;Assert(MOD:Assert,eqDBG&'v ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
+                                           Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
+	   SELF.Del()                          ;Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
 	END
-                                           Assert(MOD:Assert,eqDBG&'^ ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')     
+                                           Assert(~SELF.IsTracing, eqDBG&'^ ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')     
    
 !------------------------------------------------------------------------------------------------------	
 ctQueue.Del					PROCEDURE
 	CODE 
 ?  ASSERT( ~SELF.BaseQ &= NULL, '.Q is null in .Del')
-                                          Assert(MOD:Assert,eqDBG&'v ctQueue.Del ['& SELF.Description() &'] Records['& SELF.Records() &']')     
+                                          Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Del ['& SELF.Description() &'] Records['& SELF.Records() &']')     
 
    CLEAR (SELF.BaseQ)
    DELETE(SELF.BaseQ)
-                                          Assert(MOD:Assert,eqDBG&'^ ctQueue.Del ['& SELF.Description() &'] Records['& SELF.Records() &']')     
+                                          Assert(~SELF.IsTracing, eqDBG&'^ ctQueue.Del ['& SELF.Description() &'] Records['& SELF.Records() &']')     
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.Put                PROCEDURE
@@ -102,8 +101,8 @@ ctQueue.Count              PROCEDURE()!,LONG    !Alias for .Records
 !------------------------------------------------------------------------------------------------------  
 ctQueue.Records            PROCEDURE()!,LONG    
    CODE
-                                           Assert(MOD:Assert,eqDBG& SELF.Description() & 'Records['& RECORDS(SELF.BaseQ) &']')
-   RETURN RECORDS(SELF.BaseQ)
+                                           Assert(~SELF.IsTracing, eqDBG& SELF.Description() & 'Records['& CHOOSE(SELF.BaseQ &= NULL, 'Null', RECORDS(SELF.BaseQ)) &']')
+   RETURN CHOOSE( SELF.BaseQ &= NULL, 0, RECORDS(SELF.BaseQ) )
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.Pointer           PROCEDURE()!,LONG 
@@ -141,14 +140,14 @@ ctQueue.GetNextRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>)!,LONG,PROC !r
 RetErr     LONG,AUTO
 DesiredRow LONG,AUTO
 	CODE
-                                             ! Assert(MOD:Assert,eqDBG&'V ctQueue.GetNextRow')
-   IF ~OMITTED(InPriorRow_OutCurrRow)        !;Assert(MOD:Assert,eqDBG&'  ctQueue.GetNextRow')
+                                             ! Assert(~SELF.IsTracing, eqDBG&'V ctQueue.GetNextRow')
+   IF ~OMITTED(InPriorRow_OutCurrRow)        !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.GetNextRow')
       InPriorRow_OutCurrRow += 1
       DesiredRow = InPriorRow_OutCurrRow
-   ELSE                                      !;Assert(MOD:Assert,eqDBG&'  ctQueue.GetNextRow')
-      DesiredRow  = POINTER(SELF.BaseQ) + 1  !;Assert(MOD:Assert,eqDBG&'  ctQueue.GetNextRow')
-   END                                       !;Assert(MOD:Assert,eqDBG&'  ctQueue.GetNextRow DesiredRow['& DesiredRow &']')
-   RetErr =  SELF.GetRow(DesiredRow)         !;Assert(MOD:Assert,eqDBG&'^ ctQueue.GetNextRow RetErr['& RetErr &']')
+   ELSE                                      !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.GetNextRow')
+      DesiredRow  = POINTER(SELF.BaseQ) + 1  !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.GetNextRow')
+   END                                       !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.GetNextRow DesiredRow['& DesiredRow &']')
+   RetErr =  SELF.GetRow(DesiredRow)         !;Assert(~SELF.IsTracing, eqDBG&'^ ctQueue.GetNextRow RetErr['& RetErr &']')
    RETURN RetErr
 
 !------------------------------------------------------------------------------------------------------  
@@ -191,21 +190,124 @@ CurrPtr    LONG(0)
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.Dump              PROCEDURE(STRING xPrefix)
-HoldPtr    LONG,AUTO
-HoldBuffer ANY
-CurrPtr    LONG !NoAuto
    CODE
-   HoldPtr    = SELF.Pointer()
-   HoldBuffer = SELF.BaseQ
-   !-------------
-   LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
-      SELF.DumpOneRow(xPrefix)
-   END
-   !-------------
-   SELF.GetRow(HoldPtr)
-   SELF.BaseQ = HoldBuffer
+   SELF.ForEach( ctQueue.DumpOneRow, xPrefix, QState:Preserve)
+!-! !------------------------------------------------------------------------------------------------------  
+!-! ctQueue.Dump              PROCEDURE(STRING xPrefix)
+!-! !HoldPtr    LONG,AUTO
+!-! !HoldBuffer ANY
+!-! HoldState  LIKE(gtPtrBuffer)
+!-! CurrPtr    LONG(0) !NoAuto
+!-!    CODE
+!-!    !HoldPtr    = SELF.Pointer()
+!-!    !HoldBuffer = SELF.BaseQ
+!-!    SELF.SaveState(HoldState)
+!-!    !-------------
+!-! 
+!-!    Assert(0,eqDBG & xPrefix & 'Count()['& SELF.Count() &']')  !rel ! <--- todo, consider using an iLog 
+!-! 
+!-!    LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
+!-!       SELF.DumpOneRow(xPrefix)
+!-!    END
+!-!    !-------------
+!-!    SELF.RestoreState(HoldState)
+!-!    !SELF.GetRow(HoldPtr)
+!-!    !SELF.BaseQ = HoldBuffer
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.DumpOneRow        PROCEDURE(STRING xPrefix)!,VIRTUAL
    CODE
    !stub method, (could write something using reflection...)
+
+!------------------------------------------------------------------------------------------------------  
+ctQueue.ForEach           PROCEDURE(ftProc_Long   xProc  , LONG xUserData, BOOL xPreserveState = FALSE)
+CurrPtr    LONG(0)
+HoldState  LIKE(gtPtrBuffer)
+   CODE
+   IF xPreserveState THEN SELF.QState_Save(HoldState) END
+
+   LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
+      xProc( xUserData )
+   END
+
+   IF xPreserveState THEN SELF.QState_Restore(HoldState) END
+
+
+ctQueue.ForEach           PROCEDURE(ftMethod_Long xMethod, LONG xUserData, BOOL xPreserveState = FALSE)
+CurrPtr    LONG(0)
+HoldState  LIKE(gtPtrBuffer)
+   CODE
+   IF xPreserveState THEN SELF.QState_Save(HoldState) END
+
+   LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
+      xMethod( SELF, xUserData )
+   END
+
+   IF xPreserveState THEN SELF.QState_Restore(HoldState) END
+
+
+!------------------------------------------------------------------------------------------------------  
+ctQueue.ForEach           PROCEDURE(ftProc_String   xProc  , STRING xUserData, BOOL xPreserveState = FALSE)
+CurrPtr    LONG(0)
+HoldState  LIKE(gtPtrBuffer)
+   CODE
+   IF xPreserveState THEN SELF.QState_Save(HoldState) END
+
+   LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
+      xProc( xUserData )
+   END
+
+   IF xPreserveState THEN SELF.QState_Restore(HoldState) END
+
+
+ctQueue.ForEach           PROCEDURE(ftMethod_String xMethod, STRING xUserData, BOOL xPreserveState = FALSE)
+CurrPtr    LONG(0)
+HoldState  LIKE(gtPtrBuffer)
+   CODE
+   IF xPreserveState THEN SELF.QState_Save(HoldState) END
+
+   LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
+      xMethod( SELF, xUserData )
+   END
+
+   IF xPreserveState THEN SELF.QState_Restore(HoldState) END
+
+
+ctQueue.ForEach           PROCEDURE(ftProc_StarAny    xProc  , *?     xUserData, BOOL xPreserveState = QState:Preserve)
+CurrPtr   LONG(0)
+HoldState LIKE(gtPtrBuffer)
+   CODE
+   IF xPreserveState THEN SELF.QState_Save(HoldState) END
+
+   LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
+      xProc( xUserData )
+   END
+
+   IF xPreserveState THEN SELF.QState_Restore(HoldState) END
+
+ctQueue.ForEach           PROCEDURE(ftMethod_StarAny  xMethod, *?     xUserData, BOOL xPreserveState = QState:Preserve)   
+CurrPtr   LONG(0)
+HoldState LIKE(gtPtrBuffer)
+   CODE
+   IF xPreserveState THEN SELF.QState_Save(HoldState) END
+
+   LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
+      xMethod( SELF, xUserData )
+   END
+
+   IF xPreserveState THEN SELF.QState_Restore(HoldState) END
+
+
+!------------------------------------------------------------------------------------------------------  
+ctQueue.QState_Save         PROCEDURE(*gtPtrBuffer xgPtrBuffer)
+   CODE
+   xgPtrBuffer.Ptr = SELF.Pointer()
+   xgPtrBuffer.Buf = SELF.BaseQ
+
+!------------------------------------------------------------------------------------------------------  
+ctQueue.QState_Restore      PROCEDURE(*gtPtrBuffer xgPtrBuffer)
+   CODE
+   SELF.GetRow(xgPtrBuffer.Ptr) 
+   SELF.BaseQ = xgPtrBuffer.Buf
+
+

@@ -21,11 +21,26 @@
 ! ================================================================================
 !EndRegion Notices 
 
+Copy:Replace EQUATE(TRUE)  !used in .CopyTo, means will FREE first
+Copy:Append  EQUATE(FALSE) !used in .CopyTo, means will NOT FREE first
+
+   INCLUDE('TypedProcedures.inc'),ONCE
+
+gtPtrBuffer     GROUP,TYPE
+Ptr               LONG !a POINTER(Q)
+Buf               ANY  !to hold the buffer of a queue
+                END   
+
+QState:Preserve EQUATE(TRUE)            
+QState:Alter    EQUATE(FALSE)
+
+!---------------------------------------------------------------
 ctQueue CLASS,TYPE,MODULE('ctQueue.clw'),LINK('ctQueue.clw')
 BaseQ	    			&QUEUE
+IsTracing         BOOL
 
-CONSTRUCT		  PROCEDURE                     
-DESTRUCT		  PROCEDURE
+CONSTRUCT		   PROCEDURE                     
+DESTRUCT		      PROCEDURE
 _Dispose          PROCEDURE(),VIRTUAL                  
 Description       PROCEDURE(),STRING,VIRTUAL
 Free              PROCEDURE,VIRTUAL                
@@ -49,6 +64,24 @@ CopyTo            PROCEDURE(  *QUEUE DestQ , BOOL FreeDestFirst=TRUE) !will use 
 
 Dump              PROCEDURE(STRING xPrefix)
 DumpOneRow        PROCEDURE(STRING xPrefix),VIRTUAL
+!--------------------- 
+ftMethod_Long     PROCEDURE(LONG   xUserData),TYPE
+ftMethod_String   PROCEDURE(STRING xUserData),TYPE
+ftMethod_StarAny  PROCEDURE(*?     xUserData),TYPE
+
+ForEach           PROCEDURE(ftProc_Long       xProc  , LONG   xUserData, BOOL xPreserveState = QState:Preserve)
+ForEach           PROCEDURE(ftMethod_Long     xMethod, LONG   xUserData, BOOL xPreserveState = QState:Preserve)
+
+ForEach           PROCEDURE(ftProc_String     xProc  , STRING xUserData, BOOL xPreserveState = QState:Preserve)
+ForEach           PROCEDURE(ftMethod_String   xMethod, STRING xUserData, BOOL xPreserveState = QState:Preserve)
+
+ForEach           PROCEDURE(ftProc_StarAny    xProc  , *?     xUserData, BOOL xPreserveState = QState:Preserve)
+ForEach           PROCEDURE(ftMethod_StarAny  xMethod, *?     xUserData, BOOL xPreserveState = QState:Preserve)
+!---------------------
+
+
+QState_Save        PROCEDURE(*gtPtrBuffer xgPtrBuffer)
+QState_Restore     PROCEDURE(*gtPtrBuffer xgPtrBuffer)
           END
    
 
