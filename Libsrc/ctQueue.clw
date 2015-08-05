@@ -190,8 +190,19 @@ CurrPtr    LONG(0)
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.Dump              PROCEDURE(STRING xPrefix)
+CurrPtr    LONG(0)
+HoldState  LIKE(gtPtrBuffer)
    CODE
-   SELF.ForEach( ctQueue.DumpOneRow, xPrefix, QState:Preserve)
+                                                               Assert(0,eqDBG&'v Dumping ['& SELF.Description() &'] - ['& xPrefix &'] .Count['& SELF.Count() &']')
+                                                              !   SELF.ForEach( ctQueue.DumpOneRow, xPrefix, QState:Preserve)
+   SELF.QState_Save(HoldState) 
+
+   LOOP WHILE SELF.GetNextRow(CurrPtr)=NoError
+      SELF.DumpOneRow( xPrefix )
+   END
+
+   SELF.QState_Restore(HoldState)
+                                                               Assert(0,eqDBG&'^ Dumping ['& SELF.Description() &'] - ['& xPrefix &']')
 !-! !------------------------------------------------------------------------------------------------------  
 !-! ctQueue.Dump              PROCEDURE(STRING xPrefix)
 !-! !HoldPtr    LONG,AUTO
@@ -217,6 +228,7 @@ ctQueue.Dump              PROCEDURE(STRING xPrefix)
 !------------------------------------------------------------------------------------------------------  
 ctQueue.DumpOneRow        PROCEDURE(STRING xPrefix)!,VIRTUAL
    CODE
+   Assert(0,eqDBG&'ctQueue.DumpOneRow Pointer['& SELF.Pointer() &']') !<-- really shouldn't be here...
    !stub method, (could write something using reflection...)
 
 !------------------------------------------------------------------------------------------------------  
