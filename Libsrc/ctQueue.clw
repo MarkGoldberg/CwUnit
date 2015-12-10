@@ -125,7 +125,11 @@ ctQueue.GetPrevRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>)!,LONG,PROC !r
 DesiredRow LONG,AUTO
    CODE
    IF ~OMITTED(InPriorRow_OutCurrRow)
+      IF InPriorRow_OutCurrRow = 0
+         InPriorRow_OutCurrRow = SELF.Count()
+      ELSE
       InPriorRow_OutCurrRow -= 1
+      END
       DesiredRow = InPriorRow_OutCurrRow
    ELSE
       DesiredRow  = POINTER(SELF.BaseQ) - 1
