@@ -170,13 +170,10 @@ ctQueue.CopyTo            PROCEDURE(*ctQueue DestQ , BOOL FreeDestFirst=TRUE) !W
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.CopyTo            PROCEDURE(  *QUEUE DestQ , BOOL FreeDestFirst=TRUE) !will use RTL FREE(QUEUE)
-HoldPtr    LONG,AUTO
-HoldBuffer ANY
 CurrPtr    LONG(0) 
+HoldState  LIKE(gtPtrBuffer)   
    CODE
-
-   HoldPtr    = SELF.Pointer()
-   HoldBuffer = SELF.BaseQ
+   SELF.QState_Save(HoldState) 
 
    IF FreeDestFirst
       FREE(DestQ) 
@@ -187,8 +184,7 @@ CurrPtr    LONG(0)
         ADD(DestQ)
    END      
 
-   SELF.GetRow(HoldPtr)
-   SELF.BaseQ = HoldBuffer
+   SELF.QState_Restore(HoldState)
  
 
 
