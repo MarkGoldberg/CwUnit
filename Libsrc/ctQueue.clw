@@ -128,7 +128,7 @@ DesiredRow LONG,AUTO
       IF InPriorRow_OutCurrRow = 0
          InPriorRow_OutCurrRow = SELF.Count()
       ELSE
-      InPriorRow_OutCurrRow -= 1
+         InPriorRow_OutCurrRow -= 1
       END
       DesiredRow = InPriorRow_OutCurrRow
    ELSE
