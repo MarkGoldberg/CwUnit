@@ -45,7 +45,7 @@ ctQueue.DESTRUCT				PROCEDURE
 	SELF.Free()      !!  ;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.DESTRUCT after Free')
 	SELF._Dispose()  !!  ;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.DESTRUCT after _Dispose')
                     !!   Assert(~SELF.IsTracing, eqDBG&'^ ctQueue.DESTRUCT ['& SELF.Description() &']')
-
+                    Assert(~SELF.IsTracing, eqDBG&'^ ctQueue.DESTRUCT ['& SELF.Description() &']')
 !------------------------------------------------------------------------------------------------------  
 ctQueue._Dispose           PROCEDURE()!,VIRTUAL                     
    CODE
@@ -125,18 +125,20 @@ ctQueue.GetPrevRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>)!,LONG,PROC !r
 DesiredRow LONG,AUTO
    CODE
    IF ~OMITTED(InPriorRow_OutCurrRow)
+                                           ! Assert(0,eqDBG&'v ctQueue.GetPrevRow InPriorRow_OutCurrRow['& InPriorRow_OutCurrRow &']')
       IF InPriorRow_OutCurrRow = 0
          InPriorRow_OutCurrRow = SELF.Count()
       ELSE
          InPriorRow_OutCurrRow -= 1
       END
-      DesiredRow = InPriorRow_OutCurrRow
+      DesiredRow = InPriorRow_OutCurrRow                                             
    ELSE
       DesiredRow  = POINTER(SELF.BaseQ) - 1
       IF DesiredRow < 0
          DesiredRow = SELF.Count()  !<-- POLICY: Could be argued to set DesiredRow=0 instead.
       END     
    END      
+                                            !   Assert(0,eqDBG&'v ctQueue.GetPrevRow DesiredRow['& DesiredRow &']')
    RETURN SELF.GetRow(DesiredRow)
 
 !------------------------------------------------------------------------------------------------------	
@@ -226,9 +228,15 @@ HoldState  LIKE(gtPtrBuffer)
 !-!    !SELF.BaseQ = HoldBuffer
 
 !------------------------------------------------------------------------------------------------------  
+ctQueue.ToString          PROCEDURE()!,STRING,VIRTUAL
+   CODE
+   RETURN 'Pointer['& SELF.Pointer() &']'
+   !stub method, (could write something using reflection...)
+
+!------------------------------------------------------------------------------------------------------  
 ctQueue.DumpOneRow        PROCEDURE(STRING xPrefix)!,VIRTUAL
    CODE
-   Assert(0,eqDBG&'ctQueue.DumpOneRow Pointer['& SELF.Pointer() &']') !<-- really shouldn't be here...
+   Assert(0,eqDBG & xPrefix & ' ' & SELF.ToString() ) 
    !stub method, (could write something using reflection...)
 
 !------------------------------------------------------------------------------------------------------  
