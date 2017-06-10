@@ -22,3 +22,12 @@
 *.ico binary
 *.dct binary
 *.app binary
+
+# Force Linguist support for Clarion inc files
+*.inc  linguist-language=Clarion
+*.clw  linguist-language=Clarion
+*.int  linguist-language=Clarion
+*.equ  linguist-language=Clarion
+
+# not sure what to say for  .tpl, .tpw, .txa, .txd, .red, .pr, ,prj, .cwproj, .sln
+
