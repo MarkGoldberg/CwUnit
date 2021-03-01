@@ -39,8 +39,8 @@ ctQueue CLASS,TYPE,MODULE('ctQueue.clw'),LINK('ctQueue.clw')
 BaseQ	    			&QUEUE
 IsTracing         BOOL
 
-CONSTRUCT		   PROCEDURE                     
-DESTRUCT		      PROCEDURE
+CONSTRUCT		       PROCEDURE                     
+DESTRUCT		        PROCEDURE
 _Dispose          PROCEDURE(),VIRTUAL                  
 Description       PROCEDURE(),STRING,VIRTUAL
 Free              PROCEDURE,VIRTUAL                
@@ -81,8 +81,8 @@ ForEach           PROCEDURE(ftMethod_StarAny  xMethod, *?     xUserData, BOOL xP
 !---------------------
 
 
-QState_Save        PROCEDURE(*gtPtrBuffer xgPtrBuffer)
-QState_Restore     PROCEDURE(*gtPtrBuffer xgPtrBuffer)
+QState_Save       PROCEDURE(*gtPtrBuffer xgPtrBuffer)
+QState_Restore    PROCEDURE(*gtPtrBuffer xgPtrBuffer)
           END
    
 
