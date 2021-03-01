@@ -56,13 +56,14 @@ ctQueue.Description       PROCEDURE()!,STRING,VIRTUAL
 
 !------------------------------------------------------------------------------------------------------	
 ctQueue.Free					PROCEDURE
+QPtr LONG,AUTO
 	CODE 
 	IF (SELF.BaseQ &= NULL)                !;Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free early return .GenericQ &= NULL')
        RETURN 
    END
                                           ! Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
-	LOOP                                   !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &']')
-	   GET(SELF.BaseQ, 1)
+	LOOP QPtr = RECORDS(SELF.BaseQ) TO BY - 1  !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &']')
+	   GET(SELF.BaseQ, QPtr)
 	   IF ERRORCODE() THEN BREAK END
                                           ! Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
 	   SELF.Del()                          !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
