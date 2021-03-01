@@ -52,7 +52,7 @@ Count             PROCEDURE(),LONG    !Alias of .Records
 Records           PROCEDURE(),LONG    !Returns Records(Q)  !an interesting syntax:  RECORDS(MyQueueClass) works
 Pointer           PROCEDURE(),LONG    !Returns Pointer(Q)  !an interesting syntax:  POINTER(MyQueueClass) works
 
-
+PrepForLoop       PROCEDURE()
 GetRow            PROCEDURE(LONG xPointer),LONG,PROC !returns ErrorCode
 GetFirstRow       PROCEDURE(),LONG,PROC !returns ErrorCode
 GetNextRow        PROCEDURE(<*LONG InPriorRow_OutCurrRow>),LONG,PROC !returns ErrorCode

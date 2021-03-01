@@ -109,6 +109,11 @@ ctQueue.Pointer           PROCEDURE()!,LONG
    RETURN POINTER(SELF.BaseQ)
 
 !------------------------------------------------------------------------------------------------------  
+ctQueue.PrepForLoop        PROCEDURE() 
+   CODE
+   SELF.GetRow(0)
+
+!------------------------------------------------------------------------------------------------------  
 ctQueue.GetRow             PROCEDURE(LONG xPointer) 
    CODE
    GET(SELF.BaseQ, xPointer)
