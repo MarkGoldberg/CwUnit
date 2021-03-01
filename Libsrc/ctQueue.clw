@@ -27,8 +27,7 @@
 NoError  EQUATE(0)      !or INCLUDE('Errors.inc')
 
 eqDBG EQUATE('<4,2,7>') 
-!!                        COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
-!!                   !END-COMPILE('*** AssertHookDebugging ***', AssertHookDebugging)
+
 !------------------------------------------------------------------------------------------------------	
 ctQueue.CONSTRUCT			PROCEDURE
 	CODE 
@@ -58,17 +57,17 @@ ctQueue.Description       PROCEDURE()!,STRING,VIRTUAL
 !------------------------------------------------------------------------------------------------------	
 ctQueue.Free					PROCEDURE
 	CODE 
-	IF (SELF.BaseQ &= NULL)                ;Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free early return .GenericQ &= NULL')
+	IF (SELF.BaseQ &= NULL)                !;Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free early return .GenericQ &= NULL')
        RETURN 
    END
-                                           Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
-	LOOP                                   ;Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &']')
+                                          ! Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
+	LOOP                                   !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &']')
 	   GET(SELF.BaseQ, 1)
 	   IF ERRORCODE() THEN BREAK END
-                                           Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
-	   SELF.Del()                          ;Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
+                                          ! Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
+	   SELF.Del()                          !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
 	END
-                                           Assert(~SELF.IsTracing, eqDBG&'^ ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')     
+                                          ! Assert(~SELF.IsTracing, eqDBG&'^ ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')     
    
 !------------------------------------------------------------------------------------------------------	
 ctQueue.Del					PROCEDURE
@@ -140,7 +139,7 @@ DesiredRow LONG,AUTO
       DesiredRow  = POINTER(SELF.BaseQ) - 1
       IF DesiredRow < 0
          DesiredRow = SELF.Count()  !<-- POLICY: Could be argued to set DesiredRow=0 instead.
-      END     
+      END      
    END      
                                             !   Assert(0,eqDBG&'v ctQueue.GetPrevRow DesiredRow['& DesiredRow &']')
    RETURN SELF.GetRow(DesiredRow)

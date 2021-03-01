@@ -40,6 +40,7 @@ PassesWhenEndsWith      PROCEDURE(*CwUnit_ctResult Test)
 
             END
 
+
 TestStrings:AddTests   PROCEDURE(*CwUnit_ctTestSuite TestSuite)
   CODE
   MyTests.Init(TestSuite,'TestStrings')
