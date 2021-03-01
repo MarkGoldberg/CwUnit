@@ -62,7 +62,7 @@ QPtr LONG,AUTO
        RETURN 
    END
                                               ! Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
-   LOOP QPtr = RECORDS(SELF.BaseQ) TO BY - 1  !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &']')
+   LOOP QPtr = RECORDS(SELF.BaseQ) TO 1 BY -1 !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] SELF.BaseQ['& CHOOSE(SELF.BaseQ&=NULL,'IsNull','Ok') &']')
      GET(SELF.BaseQ, QPtr)
      IF ERRORCODE() THEN BREAK END
                                               ! Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
