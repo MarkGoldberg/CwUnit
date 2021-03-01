@@ -1,26 +1,25 @@
 	MEMBER
 
-!Region Notices 
+!Region Notices
 ! ================================================================================
-! Notice : Copyright (C) 2014, Mark Goldberg
-!          Distributed under LGPLv3 (http://www.gnu.org/licenses/lgpl.html)
-!
-!    This file is part of CwUnit (https://github.com/MarkGoldberg/CwUnit)
-!
-!    CwUnit is free software: you can redistribute it and/or modify
-!    it under the terms of the GNU General Public License as published by
-!    the Free Software Foundation, either version 3 of the License, or
-!    (at your option) any later version.
-!
-!    CwUnit is distributed in the hope that it will be useful,
-!    but WITHOUT ANY WARRANTY; without even the implied warranty of
-!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!    GNU General Public License for more details.
-!
-!    You should have received a copy of the GNU General Public License
-!    along with CwUnit.  If not, see <http://www.gnu.org/licenses/>.
+! Notice : Copyright (C) 2014-2017, Monolith Custom Computing, Inc.
+!          Distributed under MIT (https://opensource.org/licenses/MIT) 
+! 
+!    This file is part of Monolith-Common (https://github.com/MarkGoldberg/MonolithCC-Common) 
+! 
+!    MonolithCC-Common is free software: you can redistribute it and/or modify 
+!    it under the terms of the MIT License as published by 
+!    the Open Source Initiative. 
+! 
+!    MonolithCC-Common is distributed in the hope that it will be useful, 
+!    but WITHOUT ANY WARRANTY; without even the implied warranty of 
+!    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+!    MIT License for more details. 
+! 
+!    You should have received a copy of the MIT License 
+!    along with MonolithCC-Common.  If not, see <https://opensource.org/licenses/MIT>. 
 ! ================================================================================
-!EndRegion Notices 
+!EndRegion Notices
 
 	MAP
 	END
