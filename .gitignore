@@ -2,3 +2,10 @@
 *.MAP
 *.FileList.xml
 CwUnit/Testit.bat
+CwUnit/obj/
+ExampleTest/obj/
+CwUnit/ClaASC.dll
+CwUnit/ClaRUN.dll
+CwUnit/CwUnit.exe
+CwUnit.sln.cache
+*.LOG
