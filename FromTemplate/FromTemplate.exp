@@ -1,0 +1,4 @@
+LIBRARY 'FromTemplate' GUI
+EXPORTS
+
+   GET_ICWUNIT @?
