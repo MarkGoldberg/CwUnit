@@ -58,6 +58,7 @@ ctQueue.Description       PROCEDURE()!,STRING,VIRTUAL
 ctQueue.Free					PROCEDURE
 QPtr LONG,AUTO
 	CODE 
+                                              ! Assert(0,eqDBG&'v ctQueue.Free - ' & SELF.Description())
    IF (SELF.BaseQ &= NULL)                    !;Assert(~SELF.IsTracing, eqDBG&'v ctQueue.Free early return .GenericQ &= NULL')
        RETURN 
    END
@@ -69,6 +70,7 @@ QPtr LONG,AUTO
      SELF.Del()                               !;Assert(~SELF.IsTracing, eqDBG&'  ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')
    END
                                               ! Assert(~SELF.IsTracing, eqDBG&'^ ctQueue.Free ['& SELF.Description() &'] Records['& SELF.Records() &']')     
+                                              ! Assert(0,eqDBG&'^ ctQueue.Free - ' & SELF.Description())
    
 !------------------------------------------------------------------------------------------------------	
 ctQueue.Del					PROCEDURE
@@ -167,32 +169,43 @@ ctQueue.GetLastRow         PROCEDURE()
    
 	
 !------------------------------------------------------------------------------------------------------  
-ctQueue.CopyTo            PROCEDURE(*ctQueue DestQ , BOOL FreeDestFirst=TRUE) !Will call SELF.Free()
+ctQueue.CopyTo            PROCEDURE(*ctQueue xDest , BOOL FreeDestFirst=TRUE) !Will call SELF.Free()
    CODE
+                                ! Assert(0,eqDBG&'v ctQueue.CopyTo(*ctQueue) xDest['& CHOOSE(xDest&=NULL,'IsNull','Ok') &']  FreeDestFirst['& FreeDestFirst &']')
+                                !! Assert(0,eqDBG&'xDest.BaseQ['& CHOOSE( xDest.BaseQ&=NULL,'IsNull','Ok') &']')
    IF FreeDestFirst
-      DestQ.Free()  !Allows for .DEL to run, this can be a very important difference
+      xDest.Free()  !Allows for .DEL to run, this can be a very important difference
    END
-   SELF.CopyTo( DestQ.BaseQ, FALSE)
+                                ! Assert(0,eqDBG&'  ctQueue.CopyTo(*ctQueue)')
+   SELF.CopyTo( xDest.BaseQ, FALSE)
+                                ! Assert(0,eqDBG&'^ ctQueue.CopyTo(*ctQueue)')
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.CopyTo            PROCEDURE(  *QUEUE DestQ , BOOL FreeDestFirst=TRUE) !will use RTL FREE(QUEUE)
 CurrPtr    LONG(0) 
 HoldState  LIKE(gtPtrBuffer)   
    CODE
+                                                    ! Assert(0,eqDBG&'v ctQueue.CopyTo(*QUEUE)  FreeDestFirst['& FreeDestFirst &'] SELF.Description()['& SELF.Description() &']')
    SELF.QState_Save(HoldState) 
 
    IF FreeDestFirst
       FREE(DestQ) 
    END
-
+                                                    ! Assert(0,eqDBG&'  ctQueue.CopyTo(*QUEUE)  SELF.Count()['&  SELF.Count() &']')
    LOOP WHILE SELF.GetNextRow(CurrPtr) = NoError
-        DestQ = SELF.BaseQ
-        ADD(DestQ)
+                                                    ! Assert(0,eqDBG&'  ctQueue.CopyTo(*QUEUE)  CurrPtr['& CurrPtr &']')
+        SELF.CopyOneRow(DestQ)        
    END      
 
    SELF.QState_Restore(HoldState)
+                                                    ! Assert(0,eqDBG&'^ ctQueue.CopyTo(*QUEUE) ')
  
-
+!------------------------------------------------------------------------------------------------------  
+ctQueue.CopyOneRow        PROCEDURE(  *QUEUE DestQ)!,VIRTUAL  ! should be derived when copying a queue that has references
+    CODE 
+    CLEAR( DestQ )
+           DestQ = SELF.BaseQ
+    ADD  ( DestQ )
 
 !------------------------------------------------------------------------------------------------------  
 ctQueue.Dump              PROCEDURE(STRING xPrefix)

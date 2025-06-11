@@ -39,8 +39,8 @@ ctQueue CLASS,TYPE,MODULE('ctQueue.clw'),LINK('ctQueue.clw')
 BaseQ	    			&QUEUE
 IsTracing         BOOL
 
-CONSTRUCT		       PROCEDURE                     
-DESTRUCT		        PROCEDURE
+CONSTRUCT         PROCEDURE                     
+DESTRUCT          PROCEDURE
 _Dispose          PROCEDURE(),VIRTUAL                  
 Description       PROCEDURE(),STRING,VIRTUAL
 Free              PROCEDURE,VIRTUAL                
@@ -48,9 +48,9 @@ Del               PROCEDURE,VIRTUAL
 Put               PROCEDURE,VIRTUAL
 Add               PROCEDURE,VIRTUAL   !pretty meaningless, could add a sortOrder string...
 
-Count             PROCEDURE(),LONG    !Alias of .Records
-Records           PROCEDURE(),LONG    !Returns Records(Q)  !an interesting syntax:  RECORDS(MyQueueClass) works
-Pointer           PROCEDURE(),LONG    !Returns Pointer(Q)  !an interesting syntax:  POINTER(MyQueueClass) works
+Count             PROCEDURE(),LONG,VIRTUAL    !Alias of .Records
+Records           PROCEDURE(),LONG,VIRTUAL    !Returns Records(Q)  !an interesting syntax:  RECORDS(MyQueueClass) works
+Pointer           PROCEDURE(),LONG,VIRTUAL    !Returns Pointer(Q)  !an interesting syntax:  POINTER(MyQueueClass) works
 
 PrepForLoop       PROCEDURE()
 GetRow            PROCEDURE(LONG xPointer),LONG,PROC !returns ErrorCode
@@ -61,9 +61,10 @@ GetLastRow        PROCEDURE(),LONG,PROC !returns ErrorCode
 
 CopyTo            PROCEDURE(*ctQueue DestQ , BOOL FreeDestFirst=TRUE) !Will call DestQ.Free() - which will call DestQ.Del()...
 CopyTo            PROCEDURE(  *QUEUE DestQ , BOOL FreeDestFirst=TRUE) !will use RTL FREE(DestQ)
+CopyOneRow        PROCEDURE(  *QUEUE DestQ),VIRTUAL ! called by CopyTo, assumes SELF.BaseQ is aligned
 
 ToString          PROCEDURE(),STRING,VIRTUAL
-Dump              PROCEDURE(STRING xPrefix)
+Dump              PROCEDURE(STRING xPrefix),VIRTUAL
 DumpOneRow        PROCEDURE(STRING xPrefix),VIRTUAL
 !--------------------- 
 ftMethod_Long     PROCEDURE(LONG   xUserData),TYPE
