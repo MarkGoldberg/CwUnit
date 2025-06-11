@@ -58,6 +58,7 @@ AbsolutePath            PROCEDURE(STRING FleName),STRING
 WholeFileName           PROCEDURE(*gtFnSplit xaInfo),STRING
 DriveDir                PROCEDURE(  STRING xPath),STRING
 BaseName                PROCEDURE(  STRING xPath),STRING
+BaseNameNoExt           PROCEDURE(  STRING xPath),STRING
 Extension               PROCEDURE(  STRING xPath),STRING
 
 GetDriveType            PROCEDURE(  STRING xRootPathName),UNSIGNED !UINT
@@ -82,6 +83,7 @@ AbsolutePath            PROCEDURE(),STRING
 WholeFileName           PROCEDURE(),STRING
 DriveDir                PROCEDURE(),STRING
 BaseName                PROCEDURE(),STRING
+BaseNameNoExt           PROCEDURE(),STRING
 Extension               PROCEDURE(),STRING
 ToString                PROCEDURE(<STRING Delimiter>),STRING
 						END

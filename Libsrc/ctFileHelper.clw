@@ -140,6 +140,15 @@ Info  LIKE(gtFnSplit)
   SELF.FnSplit(Info)
   RETURN Info._Name & Info._Ext
 
+
+!=============================================================================
+StaticFileHelper.BaseNameNoExt           PROCEDURE(STRING xPath)!,STRING
+Info  LIKE(gtFnSplit)
+  CODE
+  Info._Path = xPath
+  SELF.FnSplit(Info)
+  RETURN Info._Name
+
 !=============================================================================
 StaticFileHelper.Extension              PROCEDURE(STRING xPath)!,STRING
 Info  LIKE(gtFnSplit)
@@ -343,6 +352,10 @@ ctFileHelper.DriveDir                PROCEDURE()!,STRING
 ctFileHelper.BaseName                PROCEDURE()!,STRING
 	CODE
 	RETURN SELF.SplitInfo._Name & SELF.SplitInfo._Ext
+
+ctFileHelper.BaseNameNoExt           PROCEDURE()!,STRING
+    CODE
+    RETURN SELF.SplitInfo._Name
 	
 ctFileHelper.Extension               PROCEDURE()!,STRING
 	CODE
