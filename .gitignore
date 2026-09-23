@@ -1,11 +1,11 @@
 *.sublime-workspace
+*.code-workspace
 *.MAP
 *.FileList.xml
 CwUnit/Testit.bat
-CwUnit/obj/
-ExampleTest/obj/
-CwUnit/ClaASC.dll
-CwUnit/ClaRUN.dll
-CwUnit/CwUnit.exe
+**/obj/
+ClaASC.dll
+ClaRUN.dll
+CwUnit.exe
 CwUnit.sln.cache
 *.LOG
